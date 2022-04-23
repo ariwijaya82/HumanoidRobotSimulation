@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.22588249277281752 -0.11415970794989358 -0.9674423293093666 4.051113331228786
-  position 1.951143974389734 -2.3981978281982212 1.8191171222180123
+  orientation 0.12266457542532168 -0.14927861490541985 -0.9811571214987154 4.888804898852676
+  position -0.27333325550256715 -1.8744500330014104 0.14943015182690728
 }
 TexturedBackground {
   texture "stadium"
@@ -19,4 +19,8 @@ Darwin-opHinge2Robocup {
   translation -0.145332 -0.530835 0.26
   controller "costum_walking"
   window "robotis-op2_window"
+}
+E-puck {
+  translation -0.244258 -1.31621 0.01
+  controller "costum_epuck"
 }

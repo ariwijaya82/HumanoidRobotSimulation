@@ -21,9 +21,15 @@ null :=
 space := $(null) $(null)
 WEBOTS_HOME_PATH=$(subst $(space),\ ,$(strip $(subst \,/,$(WEBOTS_HOME))))
 RESOURCES_PATH = $(WEBOTS_HOME)/projects/robots/robotis/darwin-op
-INCLUDE = -I"$(RESOURCES_PATH)/libraries/managers/include" -I"$(RESOURCES_PATH)/libraries/robotis-op2/robotis/Framework/include"
+INCLUDE = -I. -I"$(RESOURCES_PATH)/libraries/managers/include" -I"$(RESOURCES_PATH)/libraries/robotis-op2/robotis/Framework/include"
+INCLUDE += -I"$(WEBOTS_HOME)/include/controller/cpp"
+INCLUDE += -I"$(WEBOTS_HOME)/include/controller/c"
 LIBRARIES = -L"$(RESOURCES_PATH)/libraries/robotis-op2" -lrobotis-op2 -L"$(RESOURCES_PATH)/libraries/managers" -lmanagers
+LIBRARIES += -L"$(WEBOTS_HOME)/lib/controller" -lCppController
 CXX_SOURCES = $(wildcard *.cpp)
 
 ### Do not modify: this includes Webots global Makefile.include
-include $(WEBOTS_HOME_PATH)/resources/Makefile.include
+# include $(WEBOTS_HOME_PATH)/resources/Makefile.include
+
+all:
+	g++ $(CXX_SOURCES) -o costum_walking $(INCLUDE) $(LIBRARIES)
