@@ -28,12 +28,13 @@ static const char *motorNames[NMOTORS] = {
 Walk::Walk() : Robot() {
     mTimeStep = getBasicTimeStep();
 
-    getLED("HeadLed")->set(0xFF0000);
-    getLED("EyeLed")->set(0x00FF00);
+    // getLED("HeadLed")->set(0xFF0000);
+    // getLED("EyeLed")->set(0x00FF00);
     mAccelerometer = getAccelerometer("Accelerometer");
     mAccelerometer->enable(mTimeStep);
 
-    getGyro("Gyro")->enable(mTimeStep);
+    mGyro = getGyro("Gyro");
+    mGyro->enable(mTimeStep);
 
     for (int i = 0; i < NMOTORS; i++){
         mMotors[i] = getMotor(motorNames[i]);
@@ -76,8 +77,14 @@ void Walk::run() {
     wait(200);
 
     bool isWalking = false;
+    // const double *acc = mAccelerometer->getValues();
+    // const double *gyro = mGyro->getValues();
 
     while (true) {
+        // cout << "sensor value" << endl;
+        // cout << acc[0] << " " << acc[1] << " " << acc[2] << endl;
+        // cout << gyro[0] << " " << gyro[1] << " " << gyro[2] << endl;
+
         checkIfFallen();
 
         mGaitManager->setXAmplitude(0.0);

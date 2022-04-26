@@ -1,0 +1,37 @@
+# Copyright 1996-2021 Cyberbotics Ltd.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Webots Makefile system
+#
+# You may add some variable definitions hereafter to customize the build process
+# See documentation in $(WEBOTS_HOME_PATH)/resources/Makefile.include
+
+### Do not modify: this includes Webots global Makefile.include
+null :=
+space := $(null) $(null)
+WEBOTS_HOME_PATH=$(subst $(space),\ ,$(strip $(subst \,/,$(WEBOTS_HOME))))
+# include $(WEBOTS_HOME_PATH)/resources/Makefile.include
+
+INCLUDE = -I. -I"$(RESOURCES_PATH)/libraries/managers/include" -I"$(RESOURCES_PATH)/libraries/robotis-op2/robotis/Framework/include"
+INCLUDE += -I"$(WEBOTS_HOME)/include/controller/cpp"
+INCLUDE += -I"$(WEBOTS_HOME)/include/controller/c"
+
+LIBRARIES = -L"$(WEBOTS_HOME)/lib/controller" -lController
+LIBRARIES += -L"$(WEBOTS_HOME)/resources/projects/libraries/qt_utils" -lqt_utils
+LIBRARIES += -L"$(WEBOTS_HOME)/resources/projects/plugins/robot_windows/generic" -lgeneric
+
+CXX_SOURCES = $(wildcard *.c)
+
+all:
+	gcc $(CXX_SOURCES) -o fire_bird_6_obstacle_avoidance $(INCLUDE) $(LIBRARIES)

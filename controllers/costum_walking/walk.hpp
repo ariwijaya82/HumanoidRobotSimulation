@@ -37,6 +37,7 @@ class Walk : public webots::Robot {
         webots::Motor *mMotors[NMOTORS];
         webots::PositionSensor *mPositionSensors[NMOTORS];
         webots::Accelerometer *mAccelerometer;
+        webots::Gyro *mGyro;
         webots::Keyboard *mKeyboard;
 
         managers::RobotisOp2MotionManager *mMotionManager;

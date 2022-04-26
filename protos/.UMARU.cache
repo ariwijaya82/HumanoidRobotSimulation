@@ -1,0 +1,11 @@
+Webots Proto Cache File version 1.5
+protoFileHash: fef7b12cd911a5a716cbcae91e8c8898
+needsRobotAncestor: 1
+baseType: Robot
+slotType: 
+parameters: translation,rotation,name,color,controller,controllerArgs,customData,supervisor,synchronization,selfCollision,jerseyTexture,gearMass,backlash,MX28-torque,MX28-vel,MX28-damping,MX28-static,MX64-torque,MX64-vel,MX64-damping,MX64-static,MX106-torque,MX106-vel,MX106-damping,MX106-static,Resolution
+tags: 
+license: 
+licenseUrl: 
+documentationUrl: 
+info: 

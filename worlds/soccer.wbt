@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.12266457542532168 -0.14927861490541985 -0.9811571214987154 4.888804898852676
-  position -0.27333325550256715 -1.8744500330014104 0.14943015182690728
+  orientation 0.2743430961098313 -0.10106233283442187 -0.9563065776721065 3.8190081674908427
+  position 3.2158645593935145 -2.3428157014719506 2.810393895611391
 }
 TexturedBackground {
   texture "stadium"
@@ -12,15 +12,18 @@ TexturedBackgroundLight {
 }
 RobocupSoccerField {
 }
+E-puck {
+  translation -0.235747 0.653393 0
+  window "test_window"
+}
+FireBird6 {
+  translation -0.931985 0.122097 0.125
+  window "test_window"
+}
 RobocupTexturedSoccerBall {
   translation 0.21 0 0.14
 }
 Darwin-opHinge2Robocup {
-  translation -0.145332 -0.530835 0.26
-  controller "costum_walking"
-  window "robotis-op2_window"
-}
-E-puck {
-  translation -0.244258 -1.31621 0.01
-  controller "costum_epuck"
+  translation -0.0496613 -0.647382 0.28
+  window "test_window"
 }
