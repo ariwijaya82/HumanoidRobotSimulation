@@ -15,9 +15,14 @@
 #include "MotionPlayer.hpp"
 
 #include <webots/utils/Motion.hpp>
+#include <webots/Motor.hpp>
+#include <webots/Gyro.hpp>
 
 #include <cstdlib>
 #include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
 
 using namespace std;
 using namespace webots;
@@ -52,12 +57,51 @@ void MotionPlayer::run() {
   cout << "-------MotionPlayer example of ROBOTIS OP2-------" << endl;
   cout << "This example plays a Webots motion file" << endl;
 
+  vector<string> name = {
+    "neck_yaw", "neck_pitch", "left_shoulder_pitch [shoulder]", "left_shoulder_roll",
+    "left_elbow", "right_shoulder_pitch [shoulder]", "right_shoulder_roll", "right_elbow",
+    "left_hip_yaw [hip]", "left_hip_roll", "left_hip_pitch", "left_knee",
+    "left_ankle_roll", "left_ankle_pitch", "right_hip_yaw [hip]", "right_hip_roll",
+    "right_hip_pitch", "right_knee", "right_ankle_roll", "right_ankle_pitch"
+  };
+
+  ofstream file("servo_value.txt");
+
+  Motor *servo[name.size()];
+  for (size_t i = 0; i < name.size(); i++){
+    servo[i] = Robot::internalGetInstance()->getMotor(name[i].c_str());
+    file << name[i].c_str() << ", ";
+  }
+  Gyro *gyro = Robot::internalGetInstance()->getGyro("Gyro");
+  gyro->enable(mTimeStep);
+  file << "gyro_x, gyro_y, gyro_z\n";
+
   // step
   myStep();
 
-  Motion motion("kick.motion");
-  // motion.setLoop(true);
+  Motion motion("hand_high.motion");
+  motion.setLoop(true);
   motion.play();
-  while (true)
+
+  bool flag_open = true;
+  bool flag_close = false;
+  while (true){
     myStep();
+    if (!motion.isOver()){
+      flag_open = false;
+      flag_close = true;
+    }
+
+    if (flag_open){
+      for (size_t i = 0; i < name.size(); i++){
+        file << to_string(servo[i]->getTargetPosition()) << ", ";
+      }
+      file << gyro->getValues()[0] << ", "
+           << gyro->getValues()[1] << ", "
+           << gyro->getValues()[2] << "\n";
+    } else if (flag_close) {
+      file.close();
+      flag_close = false;
+    }
+  }
 }
