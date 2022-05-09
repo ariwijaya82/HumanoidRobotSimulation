@@ -12,18 +12,11 @@ TexturedBackgroundLight {
 }
 RobocupSoccerField {
 }
-E-puck {
-  translation -0.235747 0.653393 0
-  window "test_window"
-}
-FireBird6 {
-  translation -0.931985 0.122097 0.125
-  window "test_window"
-}
 RobocupTexturedSoccerBall {
   translation 0.21 0 0.14
 }
 Darwin-opHinge2Robocup {
   translation -0.0496613 -0.647382 0.28
+  controller "costum_walking"
   window "test_window"
 }
