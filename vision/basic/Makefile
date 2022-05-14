@@ -1,5 +1,5 @@
 COMPILER = g++
-SRC = main.cpp
+SRC = basic_thresholding.cpp
 EXE = main
 
 INCLUDE = -I"/usr/include/opencv4"
