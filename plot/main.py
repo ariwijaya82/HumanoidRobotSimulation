@@ -1,5 +1,5 @@
 import math
-from Bezier import Bezier
+# from Bezier import Bezier
 import numpy as np
 
 ## Kaki robot besar
@@ -230,19 +230,19 @@ def compute_ik(x, y, z, a, b, c):
     return result
 
 ## Raising foot kick ##
-points_set_1 = np.array([[0, 7.5, 6], [0, 7.5, 7], [-8, 7.5, 7], [-12, 7.5, 7.5], [-12, 7.5, 13.5]])
-t_points = np.arange(0, 1, 0.05)
-curve_set_1 = Bezier.Curve(t_points, points_set_1)
+# points_set_1 = np.array([[0, 7.5, 6], [0, 7.5, 7], [-8, 7.5, 7], [-12, 7.5, 7.5], [-12, 7.5, 13.5]])
+# t_points = np.arange(0, 1, 0.05)
+# curve_set_1 = Bezier.Curve(t_points, points_set_1)
 
-print("\nRaising Path")
-for i in range(len(curve_set_1)):
-    print(compute_ik(curve_set_1[i][0], curve_set_1[i][1], curve_set_1[i][2], 0, 0, 0))
+# print("\nRaising Path")
+# for i in range(len(curve_set_1)):
+#     print(compute_ik(curve_set_1[i][0], curve_set_1[i][1], curve_set_1[i][2], 0, 0, 0))
 
-## Kick path foot ##
-points_set_1 = np.array([[-20, 7.5, 13.5], [-10, 7.5, 8], [40, 7.5, 8], [60, 7.5, 10.5]])
-t_points = np.arange(0, 1, 0.05)
-curve_set_1 = Bezier.Curve(t_points, points_set_1)
+# ## Kick path foot ##
+# points_set_1 = np.array([[-20, 7.5, 13.5], [-10, 7.5, 8], [40, 7.5, 8], [60, 7.5, 10.5]])
+# t_points = np.arange(0, 1, 0.05)
+# curve_set_1 = Bezier.Curve(t_points, points_set_1)
 
-print("\nKick Path")
-for i in range(len(curve_set_1)):
-    print(compute_ik(curve_set_1[i][0], curve_set_1[i][1], curve_set_1[i][2], 0, 0, 0))
+# print("\nKick Path")
+# for i in range(len(curve_set_1)):
+#     print(compute_ik(curve_set_1[i][0], curve_set_1[i][1], curve_set_1[i][2], 0, 0, 0))
