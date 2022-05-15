@@ -1,40 +1,25 @@
-# Copyright 1996-2021 Cyberbotics Ltd.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# Webots Makefile system
-#
-# You may add some variable definitions hereafter to customize the build process
-# See documentation in $(WEBOTS_HOME_PATH)/resources/Makefile.include
-
 null :=
 space := $(null) $(null)
 WEBOTS_HOME_PATH=$(subst $(space),\ ,$(strip $(subst \,/,$(WEBOTS_HOME))))
-RESOURCES_PATH = $(WEBOTS_HOME)/projects/robots/robotis/darwin-op
+RESOURCES_PATH = $(HOME)/developer/humanoid_robot_simulation
 
-INCLUDE = -I. -I"$(RESOURCES_PATH)/libraries/managers/include" -I"$(RESOURCES_PATH)/libraries/robotis-op2/robotis/Framework/include"
+# include $(RESOURCES_PATH)/libraries/robotis-op2/Makefile
+# include $(RESOURCES_PATH)/libraries/managers/Makefile
+
+INCLUDE = -I.
 INCLUDE += -I"$(WEBOTS_HOME)/include/controller/cpp"
 INCLUDE += -I"$(WEBOTS_HOME)/include/controller/c"
+INCLUDE += -I"$(RESOURCES_PATH)/libraries/managers/include"
+INCLUDE += -I"$(RESOURCES_PATH)/libraries/robotis-op2/robotis/Framework/include"
 
-LIBRARIES = -L"$(RESOURCES_PATH)/libraries/robotis-op2" -lrobotis-op2 -L"$(RESOURCES_PATH)/libraries/managers" -lmanagers
-LIBRARIES += -L"$(WEBOTS_HOME)/lib/controller" -lController -lCppController
-# LIBRARIES += -L"$(WEBOTS_HOME)/resources/projects/libraries/qt_utils" -lqt_utils
-# LIBRARIES += -L"$(WEBOTS_HOME)/resources/projects/plugins/robot_windows/generic" -lgeneric
+LIBRARIES = -L"$(WEBOTS_HOME)/lib/controller" -lController -lCppController
+LIBRARIES += -L"$(RESOURCES_PATH)/libraries/managers" -lmanagers
+LIBRARIES += -L"$(RESOURCES_PATH)/libraries/robotis-op2" -lrobotis-op2 
 
 CXX_SOURCES = $(wildcard *.cpp)
 
-### Do not modify: this includes Webots global Makefile.include
-# include $(WEBOTS_HOME_PATH)/resources/Makefile.include
-
 all:
-	g++ $(CXX_SOURCES) -o costum_walking $(INCLUDE) $(LIBRARIES)
+	g++ $(CXX_SOURCES) $(LDFLAGS) $(INCLUDE) $(LIBRARIES) -o costum_walking 
+
+clean_dir:
+	rm costum_walking
