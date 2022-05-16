@@ -11,10 +11,12 @@ INCLUDE += -I"$(WEBOTS_HOME)/include/controller/cpp"
 INCLUDE += -I"$(WEBOTS_HOME)/include/controller/c"
 INCLUDE += -I"$(RESOURCES_PATH)/libraries/managers/include"
 INCLUDE += -I"$(RESOURCES_PATH)/libraries/robotis-op2/robotis/Framework/include"
+INCLUDE += -I"/usr/include/opencv4"
 
 LIBRARIES = -L"$(WEBOTS_HOME)/lib/controller" -lController -lCppController
 LIBRARIES += -L"$(RESOURCES_PATH)/libraries/managers" -lmanagers
 LIBRARIES += -L"$(RESOURCES_PATH)/libraries/robotis-op2" -lrobotis-op2 
+LIBRARIES += -L"/usr/lib" -lopencv_core -lopencv_highgui -lopencv_imgproc
 
 CXX_SOURCES = $(wildcard *.cpp)
 

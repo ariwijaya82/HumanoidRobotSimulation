@@ -2,21 +2,22 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.16181231424066034 0.8470788300792944 -0.506235350989612 0.7216448859144885
-  position -3.048384380124902 1.0425507549004143 2.5387171387304552
+  orientation 0.09651578459644916 0.46712385818763597 -0.8789084164095989 0.4617827164514249
+  position -3.3946716425223795 1.245379318605881 0.990572713929107
 }
 TexturedBackground {
-  texture "stadium"
+  texture "noon_park_empty"
 }
 TexturedBackgroundLight {
 }
 RobocupSoccerField {
 }
-Darwin_Robot {
-  translation -0.222129 -0.714907 0.3
-  controller "costum_walking"
-  window "generic_window"
+Ball {
+  translation 0.29 0 0.13
 }
-RobocupTexturedSoccerBall {
-  translation 0.594568 0.787763 0.14
+Darwin_Robot {
+  translation -0.222129 -0.714907 0.26
+  rotation 0 0 1 0.785398
+  controller "costum_walking"
+  window "costum_window"
 }
