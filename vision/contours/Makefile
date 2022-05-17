@@ -1,5 +1,5 @@
 COMPILER = g++
-SRC = costum_filter.cpp
+SRC = linear_filter.cpp
 EXE = main
 
 INCLUDE = -I"/usr/include/opencv4"
