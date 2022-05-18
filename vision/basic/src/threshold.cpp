@@ -43,7 +43,7 @@ static void on_high_V_thresh_trackbar(int, void*) {
 }
 
 int main() {
-    VideoCapture cap(0);
+    VideoCapture cap(2);
 
     namedWindow(window_capture_name);
     namedWindow(window_detection_name);

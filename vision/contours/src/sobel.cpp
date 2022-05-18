@@ -20,7 +20,7 @@ int main(int argc, char** argv){
     String imageName = "lena.jpg";
     image = imread(imageName, IMREAD_COLOR);
 
-    FOR (;;){
+    for (;;){
         GaussianBlur(image, src, Size(3,3), 0, 0, BORDER_DEFAULT);
         cvtColor(src, src_gray, COLOR_BGR2GRAY);
 
@@ -32,5 +32,22 @@ int main(int argc, char** argv){
 
         convertScaleAbs(grad_x, abs_grad_x);
         convertScaleAbs(grad_y, abs_grad_y);
+
+        addWeighted(abs_grad_x, 05, abs_grad_y, 0.5, 0, grad);
+
+        imshow(window_name, grad);
+        char key = (char)waitKey(0);
+
+        if (key == 27) break;
+        if (key == 'k' || key == 'K') ksize = ksize < 30 ? ksize+2 : -1;
+        if (key == 's' || key == 'S') scale++;
+        if (key == 'd' || key == 'D') delta++;
+        if (key == 'r' || key == 'R'){
+            scale = 1;
+            ksize = -1;
+            delta = 0;
+        }
     }
+
+    return EXIT_SUCCESS;
 }
