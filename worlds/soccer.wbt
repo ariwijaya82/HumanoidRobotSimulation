@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.09651578459644916 0.46712385818763597 -0.8789084164095989 0.4617827164514249
-  position -3.3946716425223795 1.245379318605881 0.990572713929107
+  orientation -0.09687634803851612 0.5286243912478793 0.8433096858026291 0.4279696873987283
+  position -2.6926402750741465 -0.9434836100536871 1.0076172045322622
 }
 TexturedBackground {
   texture "noon_park_empty"
@@ -13,11 +13,11 @@ TexturedBackgroundLight {
 RobocupSoccerField {
 }
 Ball {
-  translation 0.29 0 0.13
+  translation 0.535209 -0.208345 0.13
 }
 Darwin_Robot {
   translation -0.222129 -0.714907 0.26
   rotation 0 0 1 0.785398
-  controller "costum_walking"
-  window "costum_window"
+  controller "<extern>"
+  window "robotis-op2_window"
 }

@@ -1,1 +1,0 @@
-neck_yaw, neck_pitch, left_shoulder_pitch [shoulder], left_shoulder_roll, left_elbow, right_shoulder_pitch [shoulder], right_shoulder_roll, right_elbow, left_hip_yaw [hip], left_hip_roll, left_hip_pitch, left_knee, left_ankle_roll, left_ankle_pitch, right_hip_yaw [hip], right_hip_roll, right_hip_pitch, right_knee, right_ankle_roll, right_ankle_pitch, gyro_x, gyro_y, gyro_z

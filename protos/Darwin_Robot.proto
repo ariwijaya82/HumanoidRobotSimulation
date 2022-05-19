@@ -32,7 +32,7 @@ PROTO Darwin_Robot [
   field SFNode     jersey           NULL                       # Extends the robot with a jersey: typically RobotisJersey.proto.
   field SFInt32    channel          0                          # Defines the channel for the `Emitter` and `Receiver` devices.
   field SFBool     showWindow       FALSE                      # Is `Robot.showWindow`.
-  field SFString   window           ""                         # window plugin
+  # field SFString   window           ""                         # window plugin
   field SFBool     backlash         FALSE                      # Enables backlash on all joints.
   field MFNode     bodySlot         []                         # Extends the robot with new nodes in the body slot.
   field MFNode     headSlot         []                         # Extends the robot with new nodes in the head slot.

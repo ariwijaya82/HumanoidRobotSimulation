@@ -8,8 +8,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation 0.06483022081667701 0.06176553992300373 -0.995982961976198 1.6232236838061855
-  position 3.4801488931335256 4.368525351610091 0.8902679666796719
+  orientation 0.019972198282791634 -0.05143214795863829 0.9984767625999683 0.7418256852032765
+  position 1.3905388291715346 -1.3207806744148616 0.550263774145703
   follow "ROBOTIS OP2"
 }
 TexturedBackground {
@@ -27,7 +27,7 @@ RobotisOp2 {
 }
 UMARU {
   translation 3.02971 -0.113621 0.53
-  controller "motion_player"
+  controller "costum_motion"
 }
 RobotstadiumSoccerField {
 }

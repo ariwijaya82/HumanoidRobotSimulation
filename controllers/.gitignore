@@ -1,9 +1,0 @@
-*.o
-*.so
-*.a
-
-
-# Executables
-*.exe
-*.out
-*.app
