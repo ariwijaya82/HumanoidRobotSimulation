@@ -9,3 +9,4 @@ textFiles: -1
 consoles: Console:All:All
 consoles: Console:All:All
 renderingDevicePerspectives: OP2:Camera;0;1.00833;0;0
+renderingDevicePerspectives: ROBOTIS OP2:Camera;1;1;0;0

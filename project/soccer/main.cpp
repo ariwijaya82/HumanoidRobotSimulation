@@ -30,10 +30,10 @@ void wait(webots::Robot* myRobot, int timeStep, int ms) {
 }
 
 void checkFallen(webots::Accelerometer* accel, MotionRobot* motion){
-    int fup = 0;
-    int fdown = 0;
+    static int fup = 0;
+    static int fdown = 0;
     const double acc_tolerance = 80.0;
-    const double acc_step = 100;
+    const int acc_step = 100;
 
     const double *val = accel->getValues();
     if (val[1] < 512.0 - acc_tolerance) fup++;

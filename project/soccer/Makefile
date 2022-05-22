@@ -1,21 +1,19 @@
 RESOURCES_PATH = $(HOME)/developer/humanoid_robot_simulation
-PROJECT = soccer
 
 INCLUDE = -I"./include" \
-		  -I"$(RESOURCES_PATH)/project/$(PROJECT)/include" \
-		  -I"$(WEBOTS_HOME)/include/controller/cpp" \
-		  -I"$(WEBOTS_HOME)/include/controller/c" \
 		  -I"$(RESOURCES_PATH)/framework/include" \
+		  -I"$(WEBOTS_HOME_PATH)/include/controller/cpp" \
 		  -I"/usr/include/opencv4"
 
 LIBRARIES = -L"$(WEBOTS_HOME)/lib/controller" -lController -lCppController \
 			-L"$(RESOURCES_PATH)/framework" -lframework \
-			-L"/usr/lib" -lopencv_core -lopencv_highgui -lopencv_imgproc
+			-L"/usr/lib" -lopencv_core -lopencv_highgui -lopencv_imgproc \
+			-L"/usr/local/lib" -lyaml-cpp
 
-CXX_SOURCES = $(wildcard *.cpp) $(wildcard */*.cpp)
+CXX_SOURCES = main.cpp $(wildcard src/*.cpp)
 
 all:
-	g++ $(CXX_SOURCES) $(LDFLAGS) $(INCLUDE) $(LIBRARIES) -o run 
+	g++ $(CXX_SOURCES) $(INCLUDE) $(LIBRARIES) -o run
 
-clean_dir:
+clean:
 	rm run

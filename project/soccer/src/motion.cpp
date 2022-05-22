@@ -1,4 +1,4 @@
-#include "motion_robot.hpp"
+#include "motion.hpp"
 
 static const std::string motorNames[DMM_NMOTORS] = {
   "ShoulderR" /*ID1 */, "ShoulderL" /*ID2 */, "ArmUpperR" /*ID3 */, "ArmUpperL" /*ID4 */, "ArmLowerR" /*ID5 */,
