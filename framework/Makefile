@@ -17,7 +17,7 @@ space := $(null) $(null)
 WEBOTS_HOME_PATH=$(subst $(space),\ ,$(strip $(subst \,/,$(WEBOTS_HOME))))
 include $(WEBOTS_HOME_PATH)/resources/Makefile.os.include
 
-ROBOTISOP2_FRAMEWORK_PATH = ./framework
+ROBOTISOP2_FRAMEWORK_PATH = ./
 
 CXX_SOURCES = \
   $(ROBOTISOP2_FRAMEWORK_PATH)/src/math/Matrix.cpp \
