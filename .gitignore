@@ -1,0 +1,8 @@
+build
+
+# webots cache
+*.wbproj
+*.cache
+
+# Executables
+run

@@ -12,23 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "RobotisOp2DirectoryManager.hpp"
+// Description:   Sample showing how to use a Webots motion on the real robotis-op2
 
-#include <cstdlib>
+#ifndef MOTION_PLAYER_HPP
+#define MOTION_PLAYER_HPP
 
-using namespace std;
-using namespace managers;
+#include <webots/Robot.hpp>
 
-extern "C" {
-char *wbu_system_getenv(const char *);
-}
+class MotionPlayer : public webots::Robot {
+public:
+  MotionPlayer();
+  virtual ~MotionPlayer();
+  void run();
 
-const string &RobotisOp2DirectoryManager::getDataDirectory() {
-#ifdef CROSSCOMPILATION
-  static string path = "/robotis/Data/";
-#else
-  char *WEBOTS_HOME = wbu_system_getenv("WEBOTS_HOME");
-  static string path = string(WEBOTS_HOME) + "/projects/robots/robotis/darwin-op/libraries/robotis-op2/robotis/Data/";
+private:
+  int mTimeStep;
+
+  void myStep();
+  void wait(int ms);
+};
+
 #endif
-  return path;
-}

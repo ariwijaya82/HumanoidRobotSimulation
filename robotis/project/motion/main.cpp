@@ -12,18 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Description:   Helper class allowing to retrieve directories
+// Description:   Manage the entree point function
 
-#ifndef ROBOTISOP2_DIRECTORY_MANAGER_HPP
-#define ROBOTISOP2_DIRECTORY_MANAGER_HPP
+#include "MotionPlayer.hpp"
 
-#include <string>
+#include <cstdlib>
+#include <iostream>
 
-namespace managers {
-  class RobotisOp2DirectoryManager {
-  public:
-    static const std::string &getDataDirectory();
-  };
-}  // namespace managers
+using namespace webots;
+using namespace std;
 
-#endif
+int main(int argc, char **argv) {
+  cout << "costum motion" << endl;
+  MotionPlayer *controller = new MotionPlayer();
+  controller->run();
+  delete controller;
+  return EXIT_FAILURE;
+}

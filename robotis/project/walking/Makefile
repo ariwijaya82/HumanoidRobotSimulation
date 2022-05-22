@@ -15,7 +15,7 @@ LIBRARIES = -L"$(WEBOTS_HOME)/lib/controller" -lController -lCppController \
 CXX_SOURCES = $(wildcard *.cpp) $(wildcard */*.cpp)
 
 all:
-	g++ $(CXX_SOURCES) $(LDFLAGS) $(INCLUDE) $(LIBRARIES) -o $(PROJECT) 
+	g++ $(CXX_SOURCES) $(LDFLAGS) $(INCLUDE) $(LIBRARIES) -o main 
 
 clean_dir:
-	rm $(PROJECT)
+	rm main

@@ -18,7 +18,6 @@ WEBOTS_HOME_PATH=$(subst $(space),\ ,$(strip $(subst \,/,$(WEBOTS_HOME))))
 include $(WEBOTS_HOME_PATH)/resources/Makefile.os.include
 
 ROBOTISOP2_FRAMEWORK_PATH = ./framework
-MANAGERS_PATH = ./managers
 
 CXX_SOURCES = \
   $(ROBOTISOP2_FRAMEWORK_PATH)/src/math/Matrix.cpp \
@@ -32,16 +31,11 @@ CXX_SOURCES = \
   $(ROBOTISOP2_FRAMEWORK_PATH)/src/motion/modules/Walking.cpp \
   $(ROBOTISOP2_FRAMEWORK_PATH)/src/vision/ImgProcess.cpp \
   $(ROBOTISOP2_FRAMEWORK_PATH)/src/vision/ColorFinder.cpp \
-  $(ROBOTISOP2_FRAMEWORK_PATH)/src/vision/Image.cpp\
-  $(MANAGERS_PATH)/src/RobotisOp2DirectoryManager.cpp \
-  $(MANAGERS_PATH)/src/RobotisOp2MotionManager.cpp \
-  $(MANAGERS_PATH)/src/RobotisOp2GaitManager.cpp \
-  $(MANAGERS_PATH)/src/RobotisOp2VisionManager.cpp
+  $(ROBOTISOP2_FRAMEWORK_PATH)/src/vision/Image.cpp
 C_SOURCES = \
   $(ROBOTISOP2_FRAMEWORK_PATH)/src/minIni/minIni.c
 
 INCLUDE = -I"$(ROBOTISOP2_FRAMEWORK_PATH)/include" \
-          -I"$(MANAGERS_PATH)/include" \
           -I"$(WEBOTS_HOME_PATH)/include/controller/cpp"
 CFLAGS = -DWEBOTS
 

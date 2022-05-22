@@ -333,7 +333,6 @@ void Walking::Start()
 {
     m_Ctrl_Running = true;
     m_Real_Running = true;
-    printf("walking start\n");
 }
 
 void Walking::Stop()
