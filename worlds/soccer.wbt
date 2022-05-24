@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.12807237685271605 -0.1206230911926606 0.9844021211671696 4.636815402588201
-  position -0.058823200131633196 3.0031921196496936 1.0898380422125242
+  orientation -0.18748932837555427 -0.08951868051766342 0.9781790007885366 4.015462454592191
+  position 1.7920704873575022 2.7140805698622055 1.6214246933594303
 }
 TexturedBackground {
   texture "noon_park_empty"
@@ -12,11 +12,5 @@ TexturedBackgroundLight {
 }
 RobocupSoccerField {
 }
-Ball {
-  translation 0.505069 0.0506504 0.13
-}
-RobotisOp2 {
-  translation 0 0 0.267
-  controller "<extern>"
-  plasticColor 0 0 0
+Ichiro {
 }

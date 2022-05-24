@@ -1,6 +1,6 @@
 #include "motion.hpp"
 
-static const std::string motorNames[DMM_NMOTORS] = {
+const std::string motorNames[DMM_NMOTORS] = {
   "ShoulderR" /*ID1 */, "ShoulderL" /*ID2 */, "ArmUpperR" /*ID3 */, "ArmUpperL" /*ID4 */, "ArmLowerR" /*ID5 */,
   "ArmLowerL" /*ID6 */, "PelvYR" /*ID7 */,    "PelvYL" /*ID8 */,    "PelvR" /*ID9 */,     "PelvL" /*ID10*/,
   "LegUpperR" /*ID11*/, "LegUpperL" /*ID12*/, "LegLowerR" /*ID13*/, "LegLowerL" /*ID14*/, "AnkleR" /*ID15*/,
@@ -19,13 +19,11 @@ static double clamp(double value, double min, double max) {
   return value < min ? min : value > max ? max : value;
 }
 
-MotionRobot::MotionRobot(webots::Robot* robot, const std::string &costumMotionFile) :
-mRobot(robot),
-mCorrectlyInitialized(true)
+MotionRobot::MotionRobot(webots::Robot* robot) :
+mRobot(robot)
 {
   if (!mRobot) {
     std::cerr << "robot instance is required" << std::endl;
-    mCorrectlyInitialized = false;
     return;
   }
   mBasicTimeStep = mRobot->getBasicTimeStep();
@@ -37,17 +35,12 @@ mCorrectlyInitialized(true)
     std::string sensorName = motorNames[i];
     sensorName.push_back('S');
     mPositionSensors[i] = mRobot->getPositionSensor(sensorName);
+    mPositionSensors[i]->enable(true);
     minMotorPositions[i] = mMotors[i]->getMinPosition();
     maxMotorPositions[i] = mMotors[i]->getMaxPosition();
   }
 
   mAction = Robot::Action::GetInstance();
-  if (mAction->LoadFile((char*)costumMotionFile.c_str()) == false) {
-    std::cerr << "cannot load motion file" << std::endl;
-    mCorrectlyInitialized = false;
-    mAction = NULL;
-    return;
-  }
 }
 
 MotionRobot::~MotionRobot() {
@@ -55,34 +48,22 @@ MotionRobot::~MotionRobot() {
     mAction->Stop();
 }
 
-void MotionRobot::playPage(int id, bool sync) {
-  if (!mCorrectlyInitialized)
-    return;
-
-  if (sync) {
-    Robot::Action::PAGE page;
-    if (mAction->LoadPage(id, &page)) {
-      for (int i = 0; i < page.header.repeat; i++) {
-        for (int j = 0; j < page.header.stepnum; j++) {
-          for (int k = 0; k < DMM_NMOTORS; k++)
-            mTargetPositions[k] = valueToPosition(page.step[j].position[k+1]);
-          achieveTarget(8*page.step[j].time);
-          wait(8*page.step[j].pause);
-        }
-      }
-      if (page.header.next != 0)
-        playPage(page.header.next);
-    } else 
-      std::cerr << "cannot load the page" << std::endl;
-  } else {
-    InitMotionAsync();
-    mPage = new Robot::Action::PAGE;
-    if (!(mAction->LoadPage(id, (Robot::Action::PAGE*)mPage)))
-      std::cerr << "cannot load the page" << std::endl;
+void MotionRobot::playMotion(std::string yaml_file) {
+  std::string path = "data/motion/" + yaml_file;
+  std::ifstream file(path);
+  nlohmann::json data = nlohmann::json::parse(file);
+  for (int i = 0; i < data["poses"].size(); i++) {
+    for (int j = 0; j < 20; j++) {
+      mTargetPositions[j] = data["poses"][i]["joints"][motorNames[i]].get<float>() / 180.0 * M_PI;
+    }
+    achieveTarget(8*data["poses"][i]["speed"].get<float>());
+    wait(8*data["poses"][i]["pause"].get<float>());
   }
+  mMotionPlaying = false;
 }
 
 void MotionRobot::myStep() {
+  mMotionPlaying = true;
   int ret = mRobot->step(mBasicTimeStep);
   if (ret == -1)
     exit(EXIT_SUCCESS);
@@ -119,61 +100,5 @@ void MotionRobot::achieveTarget(int timeToAchieveTarget) {
     }
     myStep();
     stepNumberToAchieveTarget--;
-  }
-}
-
-double MotionRobot::valueToPosition(unsigned short value) {
-  double degree = Robot::MX28::Value2Angle(value);
-  double position = degree / 180.0 * M_PI;
-  return position;
-}
-
-void MotionRobot::InitMotionAsync() {
-  bool stepNeeded = false;
-  for (int i = 0; i < DMM_NMOTORS; i++) {
-    if (mPositionSensors[i]->getSamplingPeriod() <= 0) {
-      std::cerr << "position feedback " << motorNames[i] << " is not enabled" << std::endl;
-      mPositionSensors[i]->enable(mBasicTimeStep);
-      stepNeeded = true;
-    }
-    if (stepNeeded)
-      myStep();
-    mCurrentPositions[i] = mPositionSensors[i]->getValue();
-  }
-  mStepnum = 0;
-  mRepeat = 1;
-  mStepNumberToAchieveTarget = 0;
-  mWait = 0;
-  mMotionPlaying = true;
-}
-
-void MotionRobot::step(int duration) {
-  if (mStepNumberToAchieveTarget > 0) {
-    for (int i = 0; i < DMM_NMOTORS; i++) {
-      double dX = mTargetPositions[i] - mCurrentPositions[i];
-      double newPosition = mCurrentPositions[i] + dX / mStepNumberToAchieveTarget;
-      mCurrentPositions[i] = newPosition;
-      mMotors[i]->setPosition(newPosition);
-    }
-    mStepNumberToAchieveTarget--;
-  } else if (mWait > 0) mWait--;
-  else {
-    if (mStepnum < ((Robot::Action::PAGE*)mPage)->header.stepnum) {
-      for (int k = 0; k < DMM_NMOTORS; k++) 
-        mTargetPositions[k] = valueToPosition(((Robot::Action::PAGE*)mPage)->step[mStepnum].position[k+1]);
-      mStepNumberToAchieveTarget = (8*((Robot::Action::PAGE*)mPage)->step[mStepnum].time) / mBasicTimeStep;
-      if (mStepNumberToAchieveTarget == 0)
-        mStepNumberToAchieveTarget = 1;
-      mWait = (8*((Robot::Action::PAGE*)mPage)->step[mStepnum].pause) / mBasicTimeStep + 0.5;
-      mStepnum++;
-      step(duration);
-    } else if (mRepeat < (((Robot::Action::PAGE*)mPage)->header.repeat)) {
-      mRepeat++;
-      mStepnum = 0;
-      step(duration);
-    } else if (((Robot::Action::PAGE*)mPage)->header.next != 0)
-      playPage(((Robot::Action::PAGE*)mPage)->header.next, true);
-    else 
-      mMotionPlaying = true;
   }
 }

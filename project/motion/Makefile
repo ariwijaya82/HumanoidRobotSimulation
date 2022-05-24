@@ -30,7 +30,7 @@ LIBRARIES = -L"$(RESOURCES_PATH)/libraries/robotis-op2" -lrobotis-op2 -L"$(RESOU
 LIBRARIES += -L"$(WEBOTS_HOME)/lib/controller" -lCppController
 CXX_SOURCES = $(wildcard *.cpp)
 
-EXE = costum_motion
+EXE = run
 
 ### Do not modify: this includes Webots global Makefile.include
 # include $(WEBOTS_HOME_PATH)/resources/Makefile.include

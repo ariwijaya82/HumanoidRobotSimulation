@@ -7,20 +7,21 @@
 #include <webots/PositionSensor.hpp>
 #include <webots/Robot.hpp>
 
-#define DMM_NMOTORS 20
+#include <nlohmann/json.hpp>
+#include <string>
+#include <fstream>
+
+const int DMM_NMOTORS = 20;
 
 class MotionRobot {
     public:
-        MotionRobot(webots::Robot* robot, const std::string &costumMotionFile);
+        MotionRobot(webots::Robot* robot);
         virtual ~MotionRobot();
-        bool isCorrectlyInitialized() { return mCorrectlyInitialized; }
-        void playPage(int id, bool sync = true);
-        void step(int duration);
+        void playMotion(std::string yaml_file);;
         bool isMotionPlaying() { return mMotionPlaying; }
     
     private:
         webots::Robot *mRobot;
-        bool mCorrectlyInitialized;
         Robot::Action* mAction;
         int mBasicTimeStep;
         bool mMotionPlaying;
@@ -28,18 +29,12 @@ class MotionRobot {
         void myStep();
         void wait(int duration);
         void achieveTarget(int timeToAchieveTarget);
-        double valueToPosition(unsigned short value);
-        void InitMotionAsync();
 
         webots::Motor* mMotors[DMM_NMOTORS];
         webots::PositionSensor* mPositionSensors[DMM_NMOTORS];
         double mTargetPositions[DMM_NMOTORS];
         double mCurrentPositions[DMM_NMOTORS];
-        int mRepeat;
-        int mStepnum;
-        int mWait;
         int mStepNumberToAchieveTarget;
-        void *mPage;
 };
 
 #endif

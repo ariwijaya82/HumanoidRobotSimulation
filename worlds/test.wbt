@@ -1,0 +1,16 @@
+#VRML_SIM R2022a utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.18748932837555427 -0.08951868051766342 0.9781790007885366 4.015462454592191
+  position 1.7920704873575022 2.7140805698622055 1.6214246933594303
+}
+TexturedBackground {
+  texture "noon_park_empty"
+}
+TexturedBackgroundLight {
+}
+RobocupSoccerField {
+}
+Ichiro {
+}
