@@ -1,5 +1,7 @@
-*/build/
-*/__pycache__/
+#folder
+build
+__pycache__
+darwin_test
 
 # webots cache
 *.wbproj
