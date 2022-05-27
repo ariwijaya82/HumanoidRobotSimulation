@@ -8,5 +8,5 @@ darwin_test
 *.cache
 
 # Executables
+*.o
 run
-main

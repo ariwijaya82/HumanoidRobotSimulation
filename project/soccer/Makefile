@@ -1,19 +1,26 @@
-RESOURCES_PATH = $(HOME)/developer/humanoid_robot_simulation
+CXX = g++
 
-INCLUDE = -I"./include" \
-		  -I"$(RESOURCES_PATH)/framework/include" \
-		  -I"$(WEBOTS_HOME_PATH)/include/controller/cpp" \
+INCLUDE_DIRS = -I"./include" \
+		  -I"$(WEBOTS_HOME)/projects/robots/robotis/darwin-op/libraries/robotis-op2/robotis/Framework/include" \
+		  -I"$(WEBOTS_HOME)/include/controller/cpp" \
 		  -I"/usr/include/opencv4"
 
 LIBRARIES = -L"$(WEBOTS_HOME)/lib/controller" -lController -lCppController \
-			-L"$(RESOURCES_PATH)/framework" -lframework \
+			-L"$(WEBOTS_HOME)/projects/robots/robotis/darwin-op/libraries/robotis-op2" -lrobotis-op2 \
 			-L"/usr/lib" -lopencv_core -lopencv_highgui -lopencv_imgproc \
 			-L"/usr/local/lib" -lyaml-cpp
 
-CXX_SOURCES = main.cpp $(wildcard src/*.cpp)
+CXXFLAGS = -std=c++17 $(INCLUDE_DIRS)
+LDFLAGS = $(LIBRARIES)
 
-all:
-	g++ $(CXX_SOURCES) $(INCLUDE) $(LIBRARIES) -o run
+TARGET = run
+
+OBJS = $(addsuffix .o, $(basename $(wildcard find src/*.cpp)))
+
+all: $(TARGET)
 
 clean:
-	rm run
+	rm -f src/*.o $(TARGET)
+
+$(TARGET): $(OBJS) main.cpp
+	$(CXX) $(CXXFLAGS) main.cpp $(OBJS) -o $(TARGET) $(LIBRARIES)
