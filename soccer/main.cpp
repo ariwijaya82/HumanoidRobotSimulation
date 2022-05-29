@@ -1,22 +1,17 @@
 #include "motion.hpp"
-#include "walking.hpp"
+#include "kinematic.hpp"
+#include "vision.hpp"
+#include "locomotion.hpp"
 
 #include <webots/Robot.hpp>
-#include <webots/Accelerometer.hpp>
-#include <webots/Gyro.hpp>
+#include <webots/Keyboard.hpp>
+#include <webots/Camera.hpp>
+
 #include <webots/Motor.hpp>
 #include <webots/PositionSensor.hpp>
-#include <webots/Keyboard.hpp>
 
 #include <string>
 #include <iostream>
-
-const char *motorNames[20] = {
-    "ShoulderR" /*ID1 */, "ShoulderL" /*ID2 */, "ArmUpperR" /*ID3 */, "ArmUpperL" /*ID4 */, "ArmLowerR" /*ID5 */,
-    "ArmLowerL" /*ID6 */, "PelvYR" /*ID7 */,    "PelvYL" /*ID8 */,    "PelvR" /*ID9 */,     "PelvL" /*ID10*/,
-    "LegUpperR" /*ID11*/, "LegUpperL" /*ID12*/, "LegLowerR" /*ID13*/, "LegLowerL" /*ID14*/, "AnkleR" /*ID15*/,
-    "AnkleL" /*ID16*/,    "FootR" /*ID17*/,     "FootL" /*ID18*/,     "Neck" /*ID19*/,      "Head" /*ID20*/
-};
 
 void wait (int ms, webots::Robot* myRobot, int timeStep) {
     double start = myRobot->getTime();
@@ -24,74 +19,77 @@ void wait (int ms, webots::Robot* myRobot, int timeStep) {
     while (start + time >= myRobot->getTime()) myRobot->step(timeStep);
 }
 
-int main() {
-    std::cout << "Soccer program" << std::endl;
+int main(int argc, char** argv) {
+    if (argc != 2){
+        std::cout << "usage: ./run <mode>" << std::endl;
+        exit(EXIT_SUCCESS);
+    }
+
+    std::cout << "humanoid robot" << std::endl;
     webots::Robot* myRobot = new webots::Robot();
     int timeStep = myRobot->getBasicTimeStep();
-    
-    webots::Accelerometer* accel = myRobot->getAccelerometer("Accelerometer");
-    webots::Gyro* gyro = myRobot->getGyro("Gyro");
-    accel->enable(timeStep);
-    gyro->enable(timeStep);
-
-    webots::Motor* motors[20];
-    webots::PositionSensor* position_sensors[20];
-    for (int i = 0; i < 20; i++) {
-        motors[i] = myRobot->getMotor(motorNames[i]);
-        std::string name = motorNames[i];
-        name.push_back('S');
-        position_sensors[i] = myRobot->getPositionSensor(name);
-        position_sensors[i]->enable(timeStep);
-    }
 
     webots::Keyboard* keyboard = myRobot->getKeyboard();
     keyboard->enable(timeStep);
+
+    webots::Camera* camera = myRobot->getCamera("Camera");
+    int camera_width = camera->getWidth();
+    int camera_height = camera->getHeight();
+    camera->enable(2*timeStep);
     
     MotionRobot* motion = new MotionRobot(myRobot, "motion.bin");
-    WalkingRobot* walking = new WalkingRobot(myRobot);
-    walking->Initialize();
-    walking->LoadJSON("walking.json");
-    
+    KinematicRobot* kinematic = new KinematicRobot();
+    kinematic->LoadJSON("kinematic.json");
+    kinematic->Initialize();
+    VisionRobot* vision = new VisionRobot(camera_width, camera_height);
+    Locomotion* locomotion = new Locomotion(myRobot, camera_width, camera_height);
+
     motion->playPage(9);
     wait(200, myRobot, timeStep);
 
-    bool isWalking = false;
-    while(true) {
-        int key = 0;
-        while((key = keyboard->getKey()) >= 0) {
-            switch (key) {
-                case ' ':
-                    if (isWalking) {
-                        walking->Stop();
-                        isWalking = false;
-                        wait(200, myRobot, timeStep);
-                    } else {
-                        walking->Start();
-                        isWalking = true;
-                        wait(200, myRobot, timeStep);
-                    }
-                    break;
-                case webots::Keyboard::UP:
-                    walking->X_MOVE_AMPLITUDE = 20.0;
-                    break;
-                case webots::Keyboard::DOWN:
-                    walking->X_MOVE_AMPLITUDE = -20.0;
-                    break;
-                case webots::Keyboard::LEFT:
-                    walking->A_MOVE_AMPLITUDE = 10.0;
-                    break;
-                case webots::Keyboard::RIGHT:
-                    walking->A_MOVE_AMPLITUDE = -10.0;
-                    break;
+    std::string mode = argv[1];
+    if (mode == "walking"){
+        bool isWalking = false;
+        while( myRobot->step(timeStep) != -1 ) {
+            int key = 0;
+            while((key = keyboard->getKey()) >= 0) {
+                switch (key) {
+                    case ' ':
+                        if (isWalking) {
+                            kinematic->Stop();
+                            isWalking = false;
+                            wait(200, myRobot, timeStep);
+                        } else {
+                            kinematic->Start();
+                            isWalking = true;
+                            wait(200, myRobot, timeStep);
+                        }
+                        break;
+                    case webots::Keyboard::UP:
+                        kinematic->X_MOVE_AMPLITUDE = 20.0;
+                        break;
+                    case webots::Keyboard::DOWN:
+                        kinematic->X_MOVE_AMPLITUDE = -20.0;
+                        break;
+                    case webots::Keyboard::LEFT:
+                        kinematic->A_MOVE_AMPLITUDE = 20.0;
+                        break;
+                    case webots::Keyboard::RIGHT:
+                        kinematic->A_MOVE_AMPLITUDE = -20.0;
+                        break;
+                }
             }
+            locomotion->gait(kinematic);
         }
-        walking->step(timeStep);
-        walking->X_MOVE_AMPLITUDE = 0.0;
-        walking->A_MOVE_AMPLITUDE = 0.0;
-        
-        int ret = myRobot->step(timeStep);
-        if (ret == -1) exit(EXIT_SUCCESS);
     }
+    else if (mode == "head") {
+        double pos_x, pos_y, prev_x = 0, prev_y = 0;
+        while(myRobot->step(timeStep) != -1){
+            const unsigned char* frame = camera->getImage();
+            bool isDetected = vision->getBallCenter(pos_x, pos_y, frame);
 
+            locomotion->head(pos_x, pos_y, prev_x, prev_y);
+        }
+    }
     return 0;
 }

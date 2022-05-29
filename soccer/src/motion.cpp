@@ -28,17 +28,17 @@ MotionRobot::MotionRobot(webots::Robot* robot, string motion_file){
 
   for (int i = 0; i < 20; i++) {
     current_position[i] = 0.0;
-    motor[i] = myRobot->getMotor(motor_name[i]);
+    motors[i] = myRobot->getMotor(motor_name[i]);
     string sensor_name = motor_name[i];
     sensor_name.push_back('S');
-    position_sensor[i] = myRobot->getPositionSensor(sensor_name);
-    position_sensor[i]->enable(timeStep);
-    min_motor_position[i] = motor[i]->getMinPosition();
-    max_motor_position[i] = motor[i]->getMaxPosition();
+    position_sensors[i] = myRobot->getPositionSensor(sensor_name);
+    position_sensors[i]->enable(timeStep);
+    min_motor_position[i] = motors[i]->getMinPosition();
+    max_motor_position[i] = motors[i]->getMaxPosition();
   }
 
   action = Action::GetInstance();
-  string path = "data/motion/" + motion_file;
+  string path = "data/" + motion_file;
   if (action->LoadFile((char *)path.c_str()) == false) {
     cerr << "failed to load motion file" << endl;
     return;
@@ -80,10 +80,10 @@ void MotionRobot::achieveTarget(int timeToAchieveTarget) {
 
   myStep();
   for (int i = 0; i < 20; i++){
-    if (position_sensor[i]->getSamplingPeriod() <= 0) {
+    if (position_sensors[i]->getSamplingPeriod() <= 0) {
       cerr << "position sensor not enabled" << endl;
     } else {
-      current_position[i] = position_sensor[i]->getValue();
+      current_position[i] = position_sensors[i]->getValue();
     }
   }
 
@@ -93,7 +93,7 @@ void MotionRobot::achieveTarget(int timeToAchieveTarget) {
       double newPosition = current_position[i] + dX / stepNumberToAchieveTarget;
       newPosition = alg::clampValue(newPosition, min_motor_position[i], max_motor_position[i]);
       current_position[i] = newPosition;
-      motor[i]->setPosition(current_position[i]);
+      motors[i]->setPosition(current_position[i]);
     }
     myStep();
     stepNumberToAchieveTarget--;

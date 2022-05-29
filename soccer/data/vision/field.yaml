@@ -1,7 +1,0 @@
-Color:
-  hue: 10
-  hue_tolerance: 10
-  min_saturation: 0
-  max_saturation: 100
-  min_value: 0
-  max_value: 100

@@ -1,16 +1,9 @@
-#ifndef WALKING_ROBOT_HPP
-#define WALKING_ROBOT_HPP
+#ifndef KINEMATIC_ROBOT_HPP
+#define KINEMATIC_ROBOT_HPP
 
-#include <webots/Robot.hpp>
-#include <webots/Motor.hpp>
-#include <MotionModule.h>
 #include <string>
 
-#define DGM_NMOTORS 20
-
-using namespace Robot;
-
-class WalkingRobot {
+class KinematicRobot {
     public:
 		enum
 		{
@@ -45,8 +38,8 @@ class WalkingRobot {
 			PHASE3 = 3
 		};
 
-		WalkingRobot(webots::Robot* myRobot);
-		~WalkingRobot() {}
+		KinematicRobot();
+		~KinematicRobot() {}
 
 		void LoadJSON(std::string file_name);
 		void Initialize();
@@ -55,39 +48,30 @@ class WalkingRobot {
 		
 		void Process();
   		bool IsRunning() { return m_Real_Running; }
-		void step(int step);
+		bool IsCtrlRunning() { return m_Ctrl_Running; }
 		double getJointValue(int i){ return joint_value[i]; }
 
-        // Walking initial pose
 		double X_OFFSET;
 		double Y_OFFSET;
 		double Z_OFFSET;
 		double A_OFFSET;
 		double P_OFFSET;
 		double R_OFFSET;
+		double HIP_PITCH_OFFSET;
 
-		// Walking control
 		double PERIOD_TIME;
 		double DSP_RATIO;
 		double STEP_FB_RATIO;
-		double X_MOVE_AMPLITUDE;
-		double Y_MOVE_AMPLITUDE;
 		double Z_MOVE_AMPLITUDE;
-		double A_MOVE_AMPLITUDE;
-		bool A_MOVE_AIM_ON;
-
-		// Balance control
-		bool   BALANCE_ENABLE;
-		double BALANCE_KNEE_GAIN;
-		double BALANCE_ANKLE_PITCH_GAIN;
-		double BALANCE_HIP_ROLL_GAIN;
-		double BALANCE_ANKLE_ROLL_GAIN;
 		double Y_SWAP_AMPLITUDE;
 		double Z_SWAP_AMPLITUDE;
 		double ARM_SWING_GAIN;
-		double HIP_PITCH_OFFSET;
 
-		// Init angles
+		double X_MOVE_AMPLITUDE;
+		double Y_MOVE_AMPLITUDE;
+		double A_MOVE_AMPLITUDE;
+		bool A_MOVE_AIM_ON;
+
 		double INIT_R_HIP_YAW;
 		double INIT_R_HIP_ROLL;
 		double INIT_R_HIP_PITCH;
@@ -108,28 +92,10 @@ class WalkingRobot {
 		double INIT_L_SHOULDER_ROLL;
 		double INIT_L_ELBOW;
 
-		// dir angles
-		double DIR_R_HIP_YAW;
-		double DIR_R_HIP_ROLL;
-		double DIR_R_HIP_PITCH;
-		double DIR_R_KNEE;
-		double DIR_R_ANKLE_PITCH;
-		double DIR_R_ANKLE_ROLL;
-		double DIR_R_SHOULDER_PITCH;
-
-		double DIR_L_HIP_YAW;
-		double DIR_L_HIP_ROLL;
-		double DIR_L_HIP_PITCH;
-		double DIR_L_KNEE;
-		double DIR_L_ANKLE_PITCH;
-		double DIR_L_ANKLE_ROLL;
-		double DIR_L_SHOULDER_PITCH;
-
-		// Kineamtic
-		double THIGH_LENGTH;
-		double CALF_LENGTH;
-		double ANKLE_LENGTH;
-		double LEG_LENGTH;
+		double THIGH_LENGTH = 93.0;
+		double CALF_LENGTH = 93.0;
+		double ANKLE_LENGTH = 33.5;
+		double LEG_LENGTH = 219.5;
 
     private:
 		double wsin(double time, double period, double period_shift, double mag, double mag_shift);
@@ -137,12 +103,7 @@ class WalkingRobot {
 		void update_param_time();
 		void update_param_move();
 		void update_param_balance();
-		void myStep();
 
-		webots::Robot *myRobot;
-        int timeStep;
-
-		webots::Motor* motor[20];
 		double joint_value[20];
 
 		double m_PeriodTime;
@@ -200,8 +161,6 @@ class WalkingRobot {
 		double m_Time;
 
 		int    m_Phase;
-		double m_Body_Swing_Y;
-		double m_Body_Swing_Z;
 };
 
 #endif

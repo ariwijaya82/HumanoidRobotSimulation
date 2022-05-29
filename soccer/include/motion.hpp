@@ -5,7 +5,6 @@
 #include <webots/Robot.hpp>
 #include <webots/Motor.hpp>
 #include <webots/PositionSensor.hpp>
-
 #include <string>
 
 class MotionRobot {
@@ -24,8 +23,8 @@ class MotionRobot {
         void achieveTarget(int timeToAchieveTarget);
         double valueToPosition(unsigned short value);
 
-        webots::Motor* motor[20];
-        webots::PositionSensor* position_sensor[20];
+        webots::Motor* motors[20];
+        webots::PositionSensor* position_sensors[20];
         double target_position[20];
         double current_position[20];
         double min_motor_position[20];

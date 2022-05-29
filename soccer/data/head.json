@@ -1,0 +1,10 @@
+{
+  "ball": {
+    "hue": 28,
+    "hue_tolerance": 20,
+    "min_saturation": 50,
+    "min_value": 45,
+    "min_percent": 0,
+    "max_percent": 30
+  }
+}
