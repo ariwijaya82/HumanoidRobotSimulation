@@ -13,6 +13,8 @@
 #include <string>
 #include <iostream>
 
+#include <fl/Headers.h>
+
 void wait (int ms, webots::Robot* myRobot, int timeStep) {
     double start = myRobot->getTime();
     double time = (double)ms / 1000.0;
@@ -89,6 +91,26 @@ int main(int argc, char** argv) {
             bool isDetected = vision->getBallCenter(pos_x, pos_y, frame);
 
             locomotion->head(pos_x, pos_y, prev_x, prev_y);
+        }
+    }
+    else if (mode == "fuzzy") {
+        fl::Engine* engine = fl::FllImporter().fromFile("data/test.fll");
+        
+        std::string status;
+        if (not engine->isReady(&status))
+            throw fl::Exception("[engine error] engine is not ready:\n" + status, FL_AT);
+
+        fl::InputVariable* obstacle = engine->getInputVariable("obstacle");
+        fl::OutputVariable* steer = engine->getOutputVariable("mSteer");
+
+        for (int i = 0; i <= 50; ++i){
+            fl::scalar location = obstacle->getMinimum() + i * (obstacle->range() / 50);
+            obstacle->setValue(location);
+            engine->process();
+            FL_LOG("obstacle.input = " << fl::Op::str(location) << 
+                " => " << "steer.output = " << fl::Op::str(steer->getValue()));
+
+            std::cout << "value: " << steer->getValue() << std::endl;
         }
     }
     return 0;
