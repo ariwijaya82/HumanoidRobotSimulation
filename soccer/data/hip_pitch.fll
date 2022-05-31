@@ -1,0 +1,35 @@
+Engine: hip_pitch
+InputVariable: accel_y
+  enabled: true
+  range: 392 332
+  lock-range: false
+  term: positive ZShape 492 522
+  term: negative SShape 492 522
+InputVariable: gyro_y
+  enabled: true
+  range: 392 332
+  lock-range: false
+  term: positive ZShape 492 522
+  term: negative SShape 492 522
+OutputVariable: angle
+  enabled: true
+  range: -3 3
+  lock-range: false
+  aggregation: Maximum
+  defuzzifier: Centroid 100
+  default: nan
+  lock-previous: false
+  term: PM Bell 2 1 1
+  term: PS Bell 2 1 1
+  term: NS Bell -2 1 1
+  term: NM Bell -2 1 1
+RuleBlock: mamdani
+  enabled: true
+  conjunction: none
+  disjunction: none
+  implication: AlgebraicProduct
+  activation: General
+  rule: if accel_y is positive and gyro_y is positive then angle is NM
+  rule: if accel_y is positive and gyro_y is negative then angle is NS
+  rule: if accel_y is negative and gyro_y is positive then angle is PS
+  rule: if accel_y is negative and gyro_y is negative then angle is PM

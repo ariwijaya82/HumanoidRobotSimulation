@@ -144,9 +144,12 @@ int main(int argc, char** argv) {
             throw fl::Exception("[engine error] engine is not ready:\n" + status, FL_AT);
 
         fl::InputVariable* accel_y = engine->getInputVariable("accel_y");
-        // fl::InputVariable* service = engine->getInputVariable("service");
         fl::OutputVariable* angle = engine->getOutputVariable("angle");
 
+        accel_y->setValue(470);
+        engine->process();
+        std::cout << angle->getValue() << std::endl;
+        
         // for (int i = 0; i <= 50; ++i){
         //     fl::scalar location = obstacle->getMinimum() + i * (obstacle->range() / 50);
         //     obstacle->setValue(location);
@@ -156,12 +159,6 @@ int main(int argc, char** argv) {
 
         //     std::cout << "value: " << steer->getValue() << std::endl;
         // }
-        // fl::scalar food_loc = 7;
-        // fl::scalar service_loc = 8;
-        accel_y->setValue(470);
-        // service->setValue(8.8);
-        engine->process();
-        std::cout << angle->getValue() << std::endl;
     }
     return 0;
 }

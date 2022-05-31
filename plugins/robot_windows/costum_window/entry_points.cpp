@@ -29,7 +29,6 @@ bool wbw_init() {
   return gApplication->isInitialized();
 }
 
-
 void wbw_cleanup() {
   if (gViewer) {
     delete gViewer;

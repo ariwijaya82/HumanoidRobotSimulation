@@ -9,4 +9,5 @@ darwin_test
 
 # Executables
 *.o
+*.so
 run

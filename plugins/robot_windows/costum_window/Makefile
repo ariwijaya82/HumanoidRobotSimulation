@@ -27,8 +27,8 @@ CXX_SOURCES = $(wildcard *.cpp)
 
 USE_C_API = true
 
-QT_UTILS = $(WEBOTS_HOME)/resources/projects/libraries/qt_utils
-LIBRARIES = -L"$(QT_UTILS)" -lqt_utils
+QT_UTILS = $(HOME)/developer/humanoid_robot_simulation/qt_robot
+LIBRARIES = -L"$(QT_UTILS)" -lqt_robot
 INCLUDE = -I"$(QT_UTILS)"
 
 ifeq ($(OSTYPE),windows)

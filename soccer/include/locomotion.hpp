@@ -14,7 +14,11 @@ class Locomotion {
     public:
         Locomotion(webots::Robot* robot, int camera_width, int camera_height);
         void gait(KinematicRobot* kinematic);
+        void tracking(KinematicRobot* kinematic);
         void head(const double& x, const double& y, double& prev_x, double& prev_y);
+        void InitFuzzyWalking();
+        bool fuzzy_flag;
+        void InitFuzzyTracking();
 
         const char* motor_name[20] = {
             "ShoulderR" /*ID1 */, "ShoulderL" /*ID2 */, "ArmUpperR" /*ID3 */, "ArmUpperL" /*ID4 */, "ArmLowerR" /*ID5 */,
@@ -33,10 +37,17 @@ class Locomotion {
         double width;
         double height;
 
-        // temp
-        fl::Engine* engine_hip;
+        // forward backward
+        fl::Engine* engine_fb;
         fl::InputVariable* accel_y;
-        fl::OutputVariable* angle;
+        fl::InputVariable* gyro_y;
+        fl::OutputVariable* angle_pitch;
+
+        // left right
+        fl::Engine* engine_lr;
+        fl::InputVariable* accel_x;
+        fl::InputVariable* gyro_x;
+        fl::OutputVariable* angle_roll;
 };
 
 #endif
