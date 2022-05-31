@@ -1,0 +1,25 @@
+Engine: hip_control
+InputVariable: accel_x
+  enabled: true
+  range: 392 332
+  lock-range: false
+  term: left ZShape 492 522
+  term: right SShape 492 522
+OutputVariable: angle
+  enabled: true
+  range: -3 3
+  lock-range: false
+  aggregation: Maximum
+  defuzzifier: Centroid 100
+  default: nan
+  lock-previous: false
+  term: positive Bell 2 1 1
+  term: negative Bell -2 1 1
+RuleBlock: mamdani
+  enabled: true
+  conjunction: none
+  disjunction: none
+  implication: AlgebraicProduct
+  activation: General
+  rule: if accel_x is forward then angle is negative
+  rule: if accel_x is backward then angle is positive

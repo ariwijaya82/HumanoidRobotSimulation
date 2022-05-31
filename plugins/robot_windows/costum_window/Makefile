@@ -23,8 +23,7 @@ WEBOTS_HOME_PATH=$(subst $(space),\ ,$(strip $(subst \,/,$(WEBOTS_HOME))))
 
 include $(WEBOTS_HOME_PATH)/resources/Makefile.os.include
 
-CXX_SOURCES = entry_points.cpp Viewer.cpp TransferWidget.cpp SSH.cpp ZIP.cpp
-HPP_FILES_TO_MOC = TransferWidget.hpp SSH.hpp
+CXX_SOURCES = $(wildcard *.cpp)
 
 USE_C_API = true
 

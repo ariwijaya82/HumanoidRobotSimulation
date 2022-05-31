@@ -46,8 +46,8 @@ void Locomotion::gait(KinematicRobot* kinematic) {
     engine_hip->process();
     double result = angle->getValue() * alg::deg2Rad();
     // std::cout << result << std::endl;
-    kinematic->setJointValue(10, kinematic->getJointValue(10) - result);
-    kinematic->setJointValue(11, kinematic->getJointValue(11) + result);
+    // kinematic->setJointValue(10, kinematic->getJointValue(10) - result);
+    // kinematic->setJointValue(11, kinematic->getJointValue(11) + result);
     
 
     for (int i = 0; i < 18; i++) {

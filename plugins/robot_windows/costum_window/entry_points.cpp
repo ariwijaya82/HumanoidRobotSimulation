@@ -15,19 +15,20 @@
 #include "entry_points.hpp"
 
 #include <core/MainApplication.hpp>
-#include "Viewer.hpp"
+#include <gui/GenericWindow.hpp>
 
 using namespace webotsQtUtils;
 
 static MainApplication *gApplication = NULL;
-static Viewer *gViewer = NULL;
+static GenericWindow *gViewer = NULL;
 
 bool wbw_init() {
   gApplication = new MainApplication;
   if (gApplication->isInitialized())
-    gViewer = new Viewer;
+    gViewer = new GenericWindow;
   return gApplication->isInitialized();
 }
+
 
 void wbw_cleanup() {
   if (gViewer) {
