@@ -1,0 +1,35 @@
+Engine: Banker
+InputVariable: food
+  enabled: true
+  range: 0 10
+  lock-range: false
+  term: rancid Trapezoid 0 0 2 4
+  term: fine Trapezoid 2 4 6 8
+  term: delicious Trapezoid 6 8 10 10
+InputVariable: service
+  enabled: true
+  range: 0 10
+  lock-range: false
+  term: poor Gaussian 0 1.5
+  term: good Gaussian 5 1.5
+  term: execellent Gaussian 10 1.5
+OutputVariable: tip
+  enabled: true
+  range: 0 30
+  lock-range: false
+  aggregation: Maximum
+  defuzzifier: Centroid 100
+  default: nan
+  lock-previous: false
+  term: low Triangle 0 5 15
+  term: average Triangle 5 15 25
+  term: high Triangle 15 25 30
+RuleBlock:
+  enabled: true
+  conjunction: Minimum
+  disjunction: Maximum
+  implication: none
+  activation: General
+  rule: if service is poor or food is rancid then tip is low
+  rule: if service is good then tip is average
+  rule: if service is execellent or food is delicious then tip is high

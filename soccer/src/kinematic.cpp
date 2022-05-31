@@ -37,6 +37,16 @@ void KinematicRobot::LoadJSON(std::string file_name) {
     std::ifstream file(path);
     nlohmann::json data = nlohmann::json::parse(file);
     for (auto &[key, val] : data.items()) {
+        // if (key == "walk") {
+        //   try {
+        //     val.at("x").get_to(X_MOVE_AMPLITUDE);
+        //     val.at("y").get_to(Y_MOVE_AMPLITUDE);
+        //     val.at("a").get_to(A_MOVE_AMPLITUDE);
+        //     val.at("aim").get_to(A_MOVE_AIM_ON);
+        //   } catch (nlohmann::json::parse_error& ex) {
+        //     std::cerr << "parse error at byte " << ex.byte << std::endl;
+        //   }
+        // }
         if (key == "ratio") {
             try{
                 val.at("period_time").get_to(PERIOD_TIME);

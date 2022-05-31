@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.10706599843294466 0.06502505900649364 -0.9921232855249184 2.0570043380631926
-  position 0.7152965080608409 1.6938477733916857 0.5840528357989319
+  orientation 0.14695658786103843 0.011160149744350839 -0.989079982782952 2.9916491643069323
+  position 1.8013258810737627 0.26765218709543226 0.6821912436836733
 }
 TexturedBackground {
   texture "noon_park_empty"
@@ -12,6 +12,9 @@ TexturedBackgroundLight {
 }
 RobotstadiumSoccerField {
 }
-RobotisOp2 {
-  controller "<extern>"
+Ball {
+  translation 0.55 0 0.06
+}
+Ichiro {
+  translation 0.122125 0.333662 0.227
 }

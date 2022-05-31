@@ -14,21 +14,41 @@ Locomotion::Locomotion(webots::Robot* robot, int camera_width, int camera_height
         position_sensors[i]->enable(timeStep);
     }
 
-    webots::Accelerometer* accel = myRobot->getAccelerometer("Accelerometer");
-    webots::Gyro* gyro = myRobot->getGyro("Gyro");
+    accel = myRobot->getAccelerometer("Accelerometer");
+    gyro = myRobot->getGyro("Gyro");
     accel->enable(timeStep);
     gyro->enable(timeStep);
 
     width = camera_width;
     height = camera_height;
+
+    //temp
+    engine_hip = fl::FllImporter().fromFile("data/hip.fll");
+        
+    std::string status;
+    if (not engine_hip->isReady(&status))
+        throw fl::Exception("[engine error] engine is not ready:\n" + status, FL_AT);
+
+    accel_y = engine_hip->getInputVariable("accel_y");
+    angle = engine_hip->getOutputVariable("angle");
 }
 
 void Locomotion::gait(KinematicRobot* kinematic) {
     int step = timeStep / 8;
-
     for (int i = 0; i < step; i++) {
         kinematic->Process();
     }
+
+    // fuzzy control
+    const double *acc = accel->getValues();
+    double acc_y = acc[1];
+    accel_y->setValue(acc_y);
+    engine_hip->process();
+    double result = angle->getValue() * alg::deg2Rad();
+    // std::cout << result << std::endl;
+    kinematic->setJointValue(10, kinematic->getJointValue(10) - result);
+    kinematic->setJointValue(11, kinematic->getJointValue(11) + result);
+    
 
     for (int i = 0; i < 18; i++) {
         motors[i]->setPosition(kinematic->getJointValue(i));

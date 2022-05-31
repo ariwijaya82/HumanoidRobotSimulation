@@ -2,6 +2,7 @@
 #define KINEMATIC_ROBOT_HPP
 
 #include <string>
+#include <fl/Headers.h>
 
 class KinematicRobot {
     public:
@@ -50,6 +51,7 @@ class KinematicRobot {
   		bool IsRunning() { return m_Real_Running; }
 		bool IsCtrlRunning() { return m_Ctrl_Running; }
 		double getJointValue(int i){ return joint_value[i]; }
+		void setJointValue(int i, double val){ joint_value[i] = val; }
 
 		double X_OFFSET;
 		double Y_OFFSET;

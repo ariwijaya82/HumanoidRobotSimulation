@@ -15,10 +15,46 @@
 
 #include <fl/Headers.h>
 
+void myStep(webots::Robot* robot, int timeStep){
+    if (robot->step(timeStep) == -1) exit(EXIT_SUCCESS);
+}
+
 void wait (int ms, webots::Robot* myRobot, int timeStep) {
     double start = myRobot->getTime();
     double time = (double)ms / 1000.0;
     while (start + time >= myRobot->getTime()) myRobot->step(timeStep);
+}
+
+void checkIfFallen(webots::Robot* robot, MotionRobot* motion) {
+  static int fup = 0;
+  static int fdown = 0;
+  static const double acc_tolerance = 80.0;
+  static const double acc_step = 100;
+
+  webots::Accelerometer* accel = robot->getAccelerometer("Accelerometer");
+  const double *acc = accel->getValues();
+  if (acc[1] < 512.0 - acc_tolerance)
+    fup++;
+  else
+    fup = 0;
+
+  if (acc[1] > 512.0 + acc_tolerance)
+    fdown++;
+  else
+    fdown = 0;
+
+  // the robot face is down
+  if (fup > acc_step) {
+    motion->playPage(10);  // f_up
+    motion->playPage(9);   // init position
+    fup = 0;
+  }
+  // the back face is down
+  else if (fdown > acc_step) {
+    motion->playPage(11);  // b_up
+    motion->playPage(9);   // init position
+    fdown = 0;
+  }
 }
 
 int main(int argc, char** argv) {
@@ -53,7 +89,11 @@ int main(int argc, char** argv) {
     if (mode == "walking"){
         bool isWalking = false;
         while( myRobot->step(timeStep) != -1 ) {
+            checkIfFallen(myRobot, motion);
+
             int key = 0;
+            kinematic->X_MOVE_AMPLITUDE = 0;
+            kinematic->A_MOVE_AMPLITUDE = 0;
             while((key = keyboard->getKey()) >= 0) {
                 switch (key) {
                     case ' ':
@@ -81,6 +121,7 @@ int main(int argc, char** argv) {
                         break;
                 }
             }
+            kinematic->LoadJSON("kinematic.json");
             locomotion->gait(kinematic);
         }
     }
@@ -94,24 +135,33 @@ int main(int argc, char** argv) {
         }
     }
     else if (mode == "fuzzy") {
-        fl::Engine* engine = fl::FllImporter().fromFile("data/test.fll");
+        const double* acc = myRobot->getAccelerometer("Accelerometer")->getValues();
+        std::cout << acc[0] << std::endl;
+        fl::Engine* engine = fl::FllImporter().fromFile("data/hip.fll");
         
         std::string status;
         if (not engine->isReady(&status))
             throw fl::Exception("[engine error] engine is not ready:\n" + status, FL_AT);
 
-        fl::InputVariable* obstacle = engine->getInputVariable("obstacle");
-        fl::OutputVariable* steer = engine->getOutputVariable("mSteer");
+        fl::InputVariable* accel_y = engine->getInputVariable("accel_y");
+        // fl::InputVariable* service = engine->getInputVariable("service");
+        fl::OutputVariable* angle = engine->getOutputVariable("angle");
 
-        for (int i = 0; i <= 50; ++i){
-            fl::scalar location = obstacle->getMinimum() + i * (obstacle->range() / 50);
-            obstacle->setValue(location);
-            engine->process();
-            FL_LOG("obstacle.input = " << fl::Op::str(location) << 
-                " => " << "steer.output = " << fl::Op::str(steer->getValue()));
+        // for (int i = 0; i <= 50; ++i){
+        //     fl::scalar location = obstacle->getMinimum() + i * (obstacle->range() / 50);
+        //     obstacle->setValue(location);
+        //     engine->process();
+        //     FL_LOG("obstacle.input = " << fl::Op::str(location) << 
+        //         " => " << "steer.output = " << fl::Op::str(steer->getValue()));
 
-            std::cout << "value: " << steer->getValue() << std::endl;
-        }
+        //     std::cout << "value: " << steer->getValue() << std::endl;
+        // }
+        // fl::scalar food_loc = 7;
+        // fl::scalar service_loc = 8;
+        accel_y->setValue(470);
+        // service->setValue(8.8);
+        engine->process();
+        std::cout << angle->getValue() << std::endl;
     }
     return 0;
 }

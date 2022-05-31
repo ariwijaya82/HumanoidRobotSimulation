@@ -9,7 +9,7 @@ LIBRARIES = -L"$(WEBOTS_HOME)/lib/controller" -lController -lCppController \
 			-L"$(WEBOTS_HOME)/projects/robots/robotis/darwin-op/libraries/robotis-op2" -lrobotis-op2 \
 			-L"${HOME}/fuzzylite/fuzzylite/release/bin" -lfuzzylite-static
 
-CXXFLAGS = $(INCLUDE_DIRS)
+CXXFLAGS = -std=c++17 $(INCLUDE_DIRS)
 LDFLAGS = $(LIBRARIES)
 
 TARGET = run

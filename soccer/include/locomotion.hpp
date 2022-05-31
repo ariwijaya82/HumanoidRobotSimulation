@@ -2,6 +2,7 @@
 #define LOCOMOTION_HPP
 
 #include "kinematic.hpp"
+#include "algebra.hpp"
 
 #include <webots/Robot.hpp>
 #include <webots/Accelerometer.hpp>
@@ -31,6 +32,11 @@ class Locomotion {
         webots::Gyro* gyro;
         double width;
         double height;
+
+        // temp
+        fl::Engine* engine_hip;
+        fl::InputVariable* accel_y;
+        fl::OutputVariable* angle;
 };
 
 #endif
