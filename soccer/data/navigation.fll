@@ -26,7 +26,7 @@ OutputVariable: a_move
   term: PS Triangle 0 15 30
 OutputVariable: x_move
   enabled: true
-  range: -10 30
+  range: -5 30
   lock-range: false
   aggregation: Maximum
   defuzzifier: Centroid 100

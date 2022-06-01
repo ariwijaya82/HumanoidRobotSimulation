@@ -1,6 +1,7 @@
 #include "locomotion.hpp"
 #include "algebra.hpp"
 #include <iostream>
+#include <cmath>
 
 Locomotion::Locomotion(webots::Robot* robot, int camera_width, int camera_height){
     myRobot = robot;
@@ -137,6 +138,11 @@ void Locomotion::tracking(KinematicRobot* kinematic) {
 
     double x = x_move->getValue();
     double a = a_move->getValue();
+
+    if (isnan(x) || isnan(a)){
+        x = 0;
+        a = 0;
+    }
 
     std::cout << "head_pan: " << head_pan << ", head_tilt: " << head_tilt << std::endl;
     std::cout << "x_move: " << x << ", a_move: " << a << std::endl;
