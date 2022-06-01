@@ -1,35 +1,43 @@
 Engine: hip_pitch
 InputVariable: accel_y
   enabled: true
-  range: 392 332
+  range: -50 50
   lock-range: false
-  term: positive ZShape 492 522
-  term: negative SShape 492 522
+  term: NS Trapezoid -50 -50 -25 0
+  term: Z Triangle -25 0 25
+  term: PS Trapezoid 0 25 50 50
 InputVariable: gyro_y
   enabled: true
-  range: 392 332
+  range: -20 20
   lock-range: false
-  term: positive ZShape 492 522
-  term: negative SShape 492 522
+  term: NS Trapezoid -20 -20 -10 0
+  term: Z Triangle -10 0 10
+  term: PS Trapezoid 0 10 20 20
 OutputVariable: angle
   enabled: true
-  range: -3 3
+  range: -7 7
   lock-range: false
   aggregation: Maximum
   defuzzifier: Centroid 100
   default: nan
   lock-previous: false
-  term: PM Bell 2 1 1
-  term: PS Bell 2 1 1
-  term: NS Bell -2 1 1
-  term: NM Bell -2 1 1
+  term: NM Trapezoid -7 -7 -6.5 -6
+  term: NS Triangle -6 -4 -3
+  term: Z Triangle -4 0 4
+  term: PS Triangle 3 4 6
+  term: PM Trapezoid 6 6.5 7 7
 RuleBlock: mamdani
   enabled: true
-  conjunction: none
-  disjunction: none
-  implication: AlgebraicProduct
+  conjunction: Minimum
+  disjunction: Maximum
+  implication: Minimum
   activation: General
-  rule: if accel_y is positive and gyro_y is positive then angle is NM
-  rule: if accel_y is positive and gyro_y is negative then angle is NS
-  rule: if accel_y is negative and gyro_y is positive then angle is PS
-  rule: if accel_y is negative and gyro_y is negative then angle is PM
+  rule: if accel_y is NS and gyro_y is NS then angle is NM
+  rule: if accel_y is NS and gyro_y is Z then angle is NS
+  rule: if accel_y is Z and gyro_y is NS then angle is NS
+  rule: if accel_y is PS and gyro_y is NS then angle is Z
+  rule: if accel_y is Z and gyro_y is Z then angle is Z
+  rule: if accel_y is NS and gyro_y is PS then angle is Z
+  rule: if accel_y is PS and gyro_y is Z then angle is PS
+  rule: if accel_y is Z and gyro_y is PS then angle is PS
+  rule: if accel_y is PS and gyro_y is PS then angle is PM

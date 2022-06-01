@@ -87,6 +87,8 @@ int main(int argc, char** argv) {
 
     std::string mode = argv[1];
     if (mode == "walking"){
+        locomotion->InitFuzzyWalking();
+        locomotion->fuzzy_flag = true;
         bool isWalking = false;
         while( myRobot->step(timeStep) != -1 ) {
             checkIfFallen(myRobot, motion);

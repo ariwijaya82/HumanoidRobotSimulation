@@ -49,26 +49,41 @@ void Locomotion::gait(KinematicRobot* kinematic) {
 
     // fuzzy control
     if (fuzzy_flag) {
-        // const double *acc = accel->getValues();
-        // const double *gy = gyro->getValues();
-        
-        // accel_y->setValue(acc[1]);
-        // gyro_y->setValue(gy[1]);
-        // accel_x->setValue(acc[0]);
-        // gyro_x->setValue(gy[0]);
-        // engine_fb->process();
-        // engine_lr->process();
+        const double *acc = accel->getValues();
+        const double *gy = gyro->getValues();
 
-        // double pitch_deg = angle_pitch->getValue();
-        // double roll_deg = angle_roll->getValue();
+        double acc_x = acc[0] - 512.0;
+        double acc_y = acc[1] - 483.2;
+        double gy_x = gy[0] - 512.0;
+        double gy_y = gy[1] - 512.0;
         
-        // kinematic->setJointValue(10, kinematic->getJointValue(10) - pitch_deg);
-        // kinematic->setJointValue(11, kinematic->getJointValue(11) + pitch_deg);
-        // if (roll_deg < 0){
-        //     kinematic->setJointValue(2, kinematic->getJointValue(2) - roll_deg);
-        // } else {
-        //     kinematic->setJointValue(3, kinematic->getJointValue(3) - roll_deg);
-        // }
+        // std::cout << "acc_x: " << acc_x << std::endl
+        //           << "acc_y: " << acc_y << std::endl
+        //           << "gy_x: " << gy_x << std::endl
+        //           << "gy_y: " << gy_y << std::endl;
+
+        acc_y = alg::clampValue(acc_y, -50, 50);
+        gy_y = alg::clampValue(gy_y, -20, 20);
+        accel_y->setValue(acc_y);
+        gyro_y->setValue(gy_y);
+
+        acc_x = alg::clampValue(acc_x, -80, 80);
+        accel_x->setValue(acc_x);
+        // gyro_x->setValue(gy_x);
+        engine_fb->process();
+        engine_lr->process();
+
+        std::cout << "angle: " << angle_roll->getValue() << std::endl;
+        double pitch_deg = angle_pitch->getValue() * alg::deg2Rad();
+        double roll_deg = angle_roll->getValue() * alg::deg2Rad();
+        
+        kinematic->setJointValue(10, kinematic->getJointValue(10) - pitch_deg);
+        kinematic->setJointValue(11, kinematic->getJointValue(11) + pitch_deg);
+        if (roll_deg < 0){
+            kinematic->setJointValue(3, kinematic->getJointValue(2) - roll_deg);
+        } else {
+            kinematic->setJointValue(2, kinematic->getJointValue(3) - roll_deg);
+        }
     }
 
     for (int i = 0; i < 18; i++) {
