@@ -1,0 +1,47 @@
+Engine: navigation
+InputVariable: pan
+  enabled: true
+  range: -30 30
+  lock-range: false
+  term: NS Triangle -30 -15 0
+  term: Z Triangle -15 0 15
+  term: PS Triangle 0 15 30
+InputVariable: tilt
+  enabled: true
+  range: -15 15
+  lock-range: false
+  term: NS Triangle -15 -10 -5
+  term: Z Triangle -10 0 10
+  term: PS Triangle 0 10 15
+OutputVariable: a_move
+  enabled: true
+  range: -30 30
+  lock-range: false
+  aggregation: Maximum
+  defuzzifier: Centroid 100
+  default: nan
+  lock-previous: false
+  term: NS Triangle -30 -15 0
+  term: Z Triangle -15 0 15
+  term: PS Triangle 0 15 30
+OutputVariable: x_move
+  enabled: true
+  range: -10 30
+  lock-range: false
+  aggregation: Maximum
+  defuzzifier: Centroid 100
+  default: nan
+  lock-previous: false
+  term: Z Triangle -5 0 10
+  term: PS Triangle 0 20 30
+RuleBlock: mamdani
+  enabled: true
+  conjunction: Minimum
+  disjunction: Maximum
+  implication: Minimum
+  activation: General
+  rule: if pan is PS then a_move is PS
+  rule: if pan is NS then a_move is NS
+  rule: if pan is Z then a_move is Z
+  rule: if a_move is PS or a_move is NS then x_move is Z
+  rule: if a_move is Z then x_move is PS

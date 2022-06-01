@@ -127,13 +127,28 @@ int main(int argc, char** argv) {
             locomotion->gait(kinematic);
         }
     }
+    else if (mode == "tracking") {
+        locomotion->InitFuzzyTracking();
+        double pos_x, pos_y, prev_x = 0, prev_y = 0;
+        while(myRobot->step(timeStep) != -1){
+            const unsigned char* frame = camera->getImage();
+            bool isDetected = vision->getBallCenter(pos_x, pos_y, frame);
+
+            if (isDetected) {
+                locomotion->head(pos_x, pos_y, prev_x, prev_y);
+                locomotion->tracking(kinematic);
+            }
+            else locomotion->head(camera_width/2, camera_height/2, prev_x, prev_y);
+        }
+    }
     else if (mode == "head") {
         double pos_x, pos_y, prev_x = 0, prev_y = 0;
         while(myRobot->step(timeStep) != -1){
             const unsigned char* frame = camera->getImage();
             bool isDetected = vision->getBallCenter(pos_x, pos_y, frame);
 
-            locomotion->head(pos_x, pos_y, prev_x, prev_y);
+            if (isDetected) locomotion->head(pos_x, pos_y, prev_x, prev_y);
+            else locomotion->head(camera_width/2, camera_height/2, prev_x, prev_y);
         }
     }
     else if (mode == "fuzzy") {

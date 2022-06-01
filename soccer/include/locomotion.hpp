@@ -48,6 +48,13 @@ class Locomotion {
         fl::InputVariable* accel_x;
         fl::InputVariable* gyro_x;
         fl::OutputVariable* angle_roll;
+
+        // navigation
+        fl::Engine* navigation;
+        fl::InputVariable* pan_fuzzy;
+        fl::InputVariable* tilt_fuzzy;
+        fl::OutputVariable* a_move;
+        fl::OutputVariable* x_move;
 };
 
 #endif
