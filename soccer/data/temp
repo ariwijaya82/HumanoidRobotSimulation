@@ -5,15 +5,15 @@ InputVariable: pan
   lock-range: false
   term: NM Trapezoid -70 -70 -40 -20
   term: NS Triangle -50 -30 -8
-  term: Z Triangle -10 0 10
+  term: Z Triangle -10 0 -10
   term: PS Triangle 8 30 50
   term: PM Trapezoid 20 40 70 70
 InputVariable: tilt
   enabled: true
-  range: -10 15
+  range: -15 15
   lock-range: false
   term: Z Triangle -10 0 10
-  term: PS Trapezoid 0 10 15 15
+  term: PS Triangle 0 10 15
 OutputVariable: a_move
   enabled: true
   range: -40 40
@@ -36,7 +36,7 @@ OutputVariable: x_move
   default: nan
   lock-previous: false
   term: Z Triangle -5 0 10
-  term: PS Trapezoid 0 20 30 30
+  term: PS Triangle 0 20 30
 RuleBlock: mamdani
   enabled: true
   conjunction: Minimum
@@ -48,5 +48,5 @@ RuleBlock: mamdani
   rule: if pan is Z then a_move is Z
   rule: if pan is NS then a_move is NS
   rule: if pan is NM then a_move is NM
-  rule: if tilt is PS then x_move is PS
-  rule: if tilt is Z then x_move is Z
+  rule: if pan is Z and tilt is PS then x_move is PS
+  rule: if pan is Z and tilt is Z then x_move is Z

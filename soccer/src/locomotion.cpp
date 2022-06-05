@@ -25,21 +25,16 @@ Locomotion::Locomotion(webots::Robot* robot, int camera_width, int camera_height
 }
 
 void Locomotion::InitFuzzyWalking() {
-    engine_fb = fl::FllImporter().fromFile("data/hip_pitch.fll");
-    engine_lr = fl::FllImporter().fromFile("data/hip_roll.fll");
+    engine_walk = fl::FllImporter().fromFile("data/walking.fll");
         
-    std::string status1, status2;
-    if (not engine_fb->isReady(&status1) || not engine_lr->isReady(&status2)){
-        throw fl::Exception("[engine error] engine is not ready:\n" + status1, FL_AT);
-        throw fl::Exception("[engine error] engine is not ready:\n" + status2, FL_AT);
+    std::string status;
+    if (not engine_walk->isReady(&status)){
+        throw fl::Exception("[engine error] engine is not ready:\n" + status, FL_AT);
     }
 
-    accel_y = engine_fb->getInputVariable("accel_y");
-    gyro_y = engine_fb->getInputVariable("gyro_y");
-    accel_x = engine_lr->getInputVariable("accel_x");
-    gyro_x = engine_lr->getInputVariable("gyro_x");
-    angle_pitch = engine_fb->getOutputVariable("angle");
-    angle_roll = engine_lr->getOutputVariable("angle");
+    accel_fuzzy = engine_walk->getInputVariable("accel");
+    gyro_fuzzy = engine_walk->getInputVariable("gyro");
+    angle = engine_walk->getOutputVariable("angle");
 }
 
 void Locomotion::gait(KinematicRobot* kinematic) {
@@ -53,38 +48,22 @@ void Locomotion::gait(KinematicRobot* kinematic) {
         const double *acc = accel->getValues();
         const double *gy = gyro->getValues();
 
-        double acc_x = acc[0] - 512.0;
-        double acc_y = acc[1] - 483.2;
-        double gy_x = gy[0] - 512.0;
-        double gy_y = gy[1] - 512.0;
-        
-        // std::cout << "acc_x: " << acc_x << std::endl
-        //           << "acc_y: " << acc_y << std::endl
-        //           << "gy_x: " << gy_x << std::endl
-        //           << "gy_y: " << gy_y << std::endl;
+        double acc_y = (acc[1] - 483.2);
+        double gy_y = (gy[1] - 512.0);
 
         acc_y = alg::clampValue(acc_y, -50, 50);
-        gy_y = alg::clampValue(gy_y, -20, 20);
-        accel_y->setValue(acc_y);
-        gyro_y->setValue(gy_y);
-        engine_fb->process();
+        gy_y = alg::clampValue(gy_y, -50, 50);
+        accel_fuzzy->setValue(acc_y);
+        gyro_fuzzy->setValue(gy_y);
+        engine_walk->process();
 
-        // acc_x = alg::clampValue(acc_x, -80, 80);
-        // accel_x->setValue(acc_x);
-        // gyro_x->setValue(gy_x);
-        // engine_lr->process();
-
-        // std::cout << "angle: " << angle_roll->getValue() << std::endl;
-        double pitch_deg = angle_pitch->getValue() * alg::deg2Rad();
-        // double roll_deg = angle_roll->getValue() * alg::deg2Rad();
+        double pitch_deg = angle->getValue();
+        // if (isnan(pitch_deg)) pitch_deg = 0;
+        printf("acc: %lf, gyro: %lf, pitch: %lf\n", acc_y, gy_y, pitch_deg);
+        pitch_deg *=  alg::deg2Rad();
         
         kinematic->setJointValue(10, kinematic->getJointValue(10) - pitch_deg);
         kinematic->setJointValue(11, kinematic->getJointValue(11) + pitch_deg);
-        // if (roll_deg < 0){
-        //     kinematic->setJointValue(3, kinematic->getJointValue(2) - roll_deg);
-        // } else {
-        //     kinematic->setJointValue(2, kinematic->getJointValue(3) - roll_deg);
-        // }
     }
 
     for (int i = 0; i < 18; i++) {
@@ -113,28 +92,28 @@ void Locomotion::head(const double& x, const double& y, double& prev_x, double& 
 }
 
 void Locomotion::InitFuzzyTracking(){
-    navigation = fl::FllImporter().fromFile("data/navigation.fll");
+    engine_nav = fl::FllImporter().fromFile("data/navigation.fll");
         
     std::string status;
-    if (not navigation->isReady(&status)){
+    if (not engine_nav->isReady(&status)){
         throw fl::Exception("[engine error] engine is not ready:\n" + status, FL_AT);
     }
 
-    pan_fuzzy = navigation->getInputVariable("pan");
-    tilt_fuzzy = navigation->getInputVariable("tilt");
-    a_move = navigation->getOutputVariable("a_move");
-    x_move = navigation->getOutputVariable("x_move");
+    pan_fuzzy = engine_nav->getInputVariable("pan");
+    tilt_fuzzy = engine_nav->getInputVariable("tilt");
+    a_move = engine_nav->getOutputVariable("a_move");
+    x_move = engine_nav->getOutputVariable("x_move");
 }
 
 void Locomotion::tracking(KinematicRobot* kinematic) {
     double head_pan = position_sensors[18]->getValue() * alg::rad2Deg();
     double head_tilt = position_sensors[19]->getValue() * alg::rad2Deg();
 
-    head_pan = alg::clampValue(head_pan, -30, 30);
+    head_pan = alg::clampValue(head_pan, -70, 70);
     pan_fuzzy->setValue(head_pan);
-    head_tilt = alg::clampValue(head_tilt, -15, 15);
+    head_tilt = alg::clampValue(head_tilt, -10, 15);
     tilt_fuzzy->setValue(head_tilt);
-    navigation->process();
+    engine_nav->process();
 
     double x = x_move->getValue();
     double a = a_move->getValue();
@@ -145,19 +124,14 @@ void Locomotion::tracking(KinematicRobot* kinematic) {
     }
 
     std::cout << "head_pan: " << head_pan << ", head_tilt: " << head_tilt << std::endl;
-    std::cout << "x_move: " << x << ", a_move: " << a << std::endl;
+    std::cout << "a_move: " << a << ", x_move: " << x << std::endl;
 
     if (head_pan < 10 && head_pan > -10 &&
-        head_tilt > -20 && head_tilt < -10){
-        // std::cout << "done" << std::endl;
+        head_tilt > -10 && head_tilt < 0){
+        std::cout << "done" << std::endl;
         kinematic->Stop();
     } else {
-        // std::cout << "start" << std::endl;
-        kinematic->Start();
         kinematic->X_MOVE_AMPLITUDE = x;
         kinematic->A_MOVE_AMPLITUDE = a;
     }
-
-    fuzzy_flag = false;
-    gait(kinematic);
 }

@@ -1,0 +1,35 @@
+Engine: walking
+InputVariable: accel
+  enabled: true
+  range: -50 50
+  lock-range: false
+  term: N ZShape -30 30
+  term: P SShape -30 30
+InputVariable: gyro
+  enabled: true
+  range: -50 50
+  lock-range: false
+  term: N ZShape -30 30
+  term: P SShape -30 30
+OutputVariable: angle
+  enabled: true
+  range: -15 15
+  lock-range: false
+  aggregation: Maximum
+  defuzzifier: Centroid 100
+  default: nan
+  lock-previous: false
+  term: NL Bell -12 5 2
+  term: NM Bell -8 5 2
+  term: PM Bell 8 5 2
+  term: PL Bell 12 5 2
+RuleBlock: mamdani
+  enabled: true
+  conjunction: Minimum
+  disjunction: Maximum
+  implication: Minimum
+  activation: General
+  rule: if accel is N then angle is NM
+  rule: if accel is P then angle is PM
+  rule: if gyro is N then angle is NL
+  rule: if gyro is P then angle is PL

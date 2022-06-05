@@ -37,20 +37,14 @@ class Locomotion {
         double width;
         double height;
 
-        // forward backward
-        fl::Engine* engine_fb;
-        fl::InputVariable* accel_y;
-        fl::InputVariable* gyro_y;
-        fl::OutputVariable* angle_pitch;
-
-        // left right
-        fl::Engine* engine_lr;
-        fl::InputVariable* accel_x;
-        fl::InputVariable* gyro_x;
-        fl::OutputVariable* angle_roll;
+        // walking
+        fl::Engine* engine_walk;
+        fl::InputVariable* accel_fuzzy;
+        fl::InputVariable* gyro_fuzzy;
+        fl::OutputVariable* angle;
 
         // navigation
-        fl::Engine* navigation;
+        fl::Engine* engine_nav;
         fl::InputVariable* pan_fuzzy;
         fl::InputVariable* tilt_fuzzy;
         fl::OutputVariable* a_move;

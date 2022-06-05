@@ -28,8 +28,8 @@ void wait (int ms, webots::Robot* myRobot, int timeStep) {
 void checkIfFallen(webots::Robot* robot, MotionRobot* motion) {
   static int fup = 0;
   static int fdown = 0;
-  static const double acc_tolerance = 80.0;
-  static const double acc_step = 100;
+  static const double acc_tolerance = 60.0;
+  static const double acc_step = 50;
 
   webots::Accelerometer* accel = robot->getAccelerometer("Accelerometer");
   const double *acc = accel->getValues();
@@ -87,14 +87,17 @@ int main(int argc, char** argv) {
 
     std::string mode = argv[1];
     if (mode == "walking"){
+        // kinematic->LoadJSON("kinematic.json");
         locomotion->InitFuzzyWalking();
-        locomotion->fuzzy_flag = true;
+
+        locomotion->fuzzy_flag = false;
+        std::cout << "walking" << std::endl;
+        std::cout << "fuzzy off" << std::endl;
         bool isWalking = false;
         while( myRobot->step(timeStep) != -1 ) {
             checkIfFallen(myRobot, motion);
 
             int key = 0;
-            kinematic->X_MOVE_AMPLITUDE = 0;
             kinematic->A_MOVE_AMPLITUDE = 0;
             while((key = keyboard->getKey()) >= 0) {
                 switch (key) {
@@ -109,11 +112,26 @@ int main(int argc, char** argv) {
                             wait(200, myRobot, timeStep);
                         }
                         break;
-                    case webots::Keyboard::UP:
+                    case 49: // 1
+                        kinematic->X_MOVE_AMPLITUDE = 10.0;
+                        break;
+                    case 50: // 2
                         kinematic->X_MOVE_AMPLITUDE = 20.0;
                         break;
+                    case 51: // 3
+                        kinematic->X_MOVE_AMPLITUDE = 30.0;
+                        break;
+                    case 52: // 4
+                        kinematic->X_MOVE_AMPLITUDE = 40.0;
+                        break;
+                    case 53: // 5
+                        kinematic->X_MOVE_AMPLITUDE = 50.0;
+                        break;
+                    case 54: // 6
+                        kinematic->X_MOVE_AMPLITUDE = 60.0;
+                        break;
                     case webots::Keyboard::DOWN:
-                        kinematic->X_MOVE_AMPLITUDE = -20.0;
+                        kinematic->X_MOVE_AMPLITUDE = 0.0;
                         break;
                     case webots::Keyboard::LEFT:
                         kinematic->A_MOVE_AMPLITUDE = 20.0;
@@ -121,14 +139,26 @@ int main(int argc, char** argv) {
                     case webots::Keyboard::RIGHT:
                         kinematic->A_MOVE_AMPLITUDE = -20.0;
                         break;
+                    case 65: // a
+                        std::cout << "fuzzy on" << std::endl;
+                        locomotion->fuzzy_flag = true;
+                        break;
+                    case 83: // s
+                        std::cout << "fuzzy off" << std::endl;
+                        locomotion->fuzzy_flag = false;
+                        break;
                 }
             }
-            kinematic->LoadJSON("kinematic.json");
             locomotion->gait(kinematic);
         }
     }
-    else if (mode == "tracking") {
+    else if (mode == "navigation") {
+        locomotion->InitFuzzyWalking();
         locomotion->InitFuzzyTracking();
+        locomotion->fuzzy_flag = false;
+        std::cout << "navigation" << std::endl;
+        std::cout << "fuzzy off" << std::endl;
+        bool isWalking = false;
         double pos_x, pos_y, prev_x = 0, prev_y = 0;
         while(myRobot->step(timeStep) != -1){
             const unsigned char* frame = camera->getImage();
@@ -139,43 +169,37 @@ int main(int argc, char** argv) {
                 locomotion->tracking(kinematic);
             }
             else locomotion->head(camera_width/2, camera_height/2, prev_x, prev_y);
+
+            checkIfFallen(myRobot, motion);
+
+            int key = 0;
+            while((key = keyboard->getKey()) >= 0) {
+                switch (key) {
+                    case ' ':
+                        if (isWalking) {
+                            kinematic->Stop();
+                            isWalking = false;
+                            wait(200, myRobot, timeStep);
+                        } else {
+                            kinematic->Start();
+                            isWalking = true;
+                            wait(200, myRobot, timeStep);
+                            kinematic->X_MOVE_AMPLITUDE = 0;
+                            kinematic->A_MOVE_AMPLITUDE = 0;
+                        }
+                        break;
+                    case 65: // a
+                        std::cout << "fuzzy on" << std::endl;
+                        locomotion->fuzzy_flag = true;
+                        break;
+                    case 83: // s
+                        std::cout << "fuzzy off" << std::endl;
+                        locomotion->fuzzy_flag = false;
+                        break;
+                }
+            }
+            locomotion->gait(kinematic);
         }
-    }
-    else if (mode == "head") {
-        double pos_x, pos_y, prev_x = 0, prev_y = 0;
-        while(myRobot->step(timeStep) != -1){
-            const unsigned char* frame = camera->getImage();
-            bool isDetected = vision->getBallCenter(pos_x, pos_y, frame);
-
-            if (isDetected) locomotion->head(pos_x, pos_y, prev_x, prev_y);
-            else locomotion->head(camera_width/2, camera_height/2, prev_x, prev_y);
-        }
-    }
-    else if (mode == "fuzzy") {
-        const double* acc = myRobot->getAccelerometer("Accelerometer")->getValues();
-        std::cout << acc[0] << std::endl;
-        fl::Engine* engine = fl::FllImporter().fromFile("data/hip.fll");
-        
-        std::string status;
-        if (not engine->isReady(&status))
-            throw fl::Exception("[engine error] engine is not ready:\n" + status, FL_AT);
-
-        fl::InputVariable* accel_y = engine->getInputVariable("accel_y");
-        fl::OutputVariable* angle = engine->getOutputVariable("angle");
-
-        accel_y->setValue(470);
-        engine->process();
-        std::cout << angle->getValue() << std::endl;
-        
-        // for (int i = 0; i <= 50; ++i){
-        //     fl::scalar location = obstacle->getMinimum() + i * (obstacle->range() / 50);
-        //     obstacle->setValue(location);
-        //     engine->process();
-        //     FL_LOG("obstacle.input = " << fl::Op::str(location) << 
-        //         " => " << "steer.output = " << fl::Op::str(steer->getValue()));
-
-        //     std::cout << "value: " << steer->getValue() << std::endl;
-        // }
     }
     return 0;
 }
