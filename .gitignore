@@ -6,6 +6,7 @@ darwin_test
 # webots cache
 *.wbproj
 *.cache
+*.csv
 
 # Executables
 *.o
