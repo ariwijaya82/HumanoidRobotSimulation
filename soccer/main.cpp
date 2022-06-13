@@ -12,6 +12,7 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 
 #include <fl/Headers.h>
 
@@ -85,9 +86,13 @@ int main(int argc, char** argv) {
     motion->playPage(9);
     wait(200, myRobot, timeStep);
 
+    // save data
+    std::ofstream file("data/data.csv");
+    file << "accel, gyro, control\n";
+    double data[3];
+
     std::string mode = argv[1];
     if (mode == "walking"){
-        // kinematic->LoadJSON("kinematic.json");
         locomotion->InitFuzzyWalking();
 
         locomotion->fuzzy_flag = false;
@@ -130,6 +135,9 @@ int main(int argc, char** argv) {
                     case 54: // 6
                         kinematic->X_MOVE_AMPLITUDE = 60.0;
                         break;
+                    case webots::Keyboard::UP:
+                        kinematic->X_MOVE_AMPLITUDE = 30.0;
+                        break;
                     case webots::Keyboard::DOWN:
                         kinematic->X_MOVE_AMPLITUDE = 0.0;
                         break;
@@ -149,7 +157,10 @@ int main(int argc, char** argv) {
                         break;
                 }
             }
-            locomotion->gait(kinematic);
+            locomotion->gait(kinematic, data);
+            if (isWalking){
+                file << data[0] << ", " << data[1] << ", " << data[2] << "\n";
+            }
         }
     }
     else if (mode == "navigation") {

@@ -37,7 +37,7 @@ void Locomotion::InitFuzzyWalking() {
     angle = engine_walk->getOutputVariable("angle");
 }
 
-void Locomotion::gait(KinematicRobot* kinematic) {
+void Locomotion::gait(KinematicRobot* kinematic, double *data) {
     int step = timeStep / 8;
     for (int i = 0; i < step; i++) {
         kinematic->Process();
@@ -48,18 +48,27 @@ void Locomotion::gait(KinematicRobot* kinematic) {
         const double *acc = accel->getValues();
         const double *gy = gyro->getValues();
 
-        double acc_y = (acc[1] - 483.2);
+        double acc_y = (acc[1] - 486);
         double gy_y = (gy[1] - 512.0);
 
         acc_y = alg::clampValue(acc_y, -50, 50);
         gy_y = alg::clampValue(gy_y, -50, 50);
+        
+        if (data) {
+            data[0] = acc_y;
+            data[1] = gy_y;
+        }
+
         accel_fuzzy->setValue(acc_y);
         gyro_fuzzy->setValue(gy_y);
         engine_walk->process();
 
         double pitch_deg = angle->getValue();
         // if (isnan(pitch_deg)) pitch_deg = 0;
-        printf("acc: %lf, gyro: %lf, pitch: %lf\n", acc_y, gy_y, pitch_deg);
+        // printf("acc: %lf, gyro: %lf, pitch: %lf\n", acc_y, gy_y, pitch_deg);
+        if (data) {
+            data[2] = pitch_deg;
+        }
         pitch_deg *=  alg::deg2Rad();
         
         kinematic->setJointValue(10, kinematic->getJointValue(10) - pitch_deg);
@@ -123,8 +132,8 @@ void Locomotion::tracking(KinematicRobot* kinematic) {
         a = 0;
     }
 
-    std::cout << "head_pan: " << head_pan << ", head_tilt: " << head_tilt << std::endl;
-    std::cout << "a_move: " << a << ", x_move: " << x << std::endl;
+    // std::cout << "head_pan: " << head_pan << ", head_tilt: " << head_tilt << std::endl;
+    // std::cout << "a_move: " << a << ", x_move: " << x << std::endl;
 
     if (head_pan < 10 && head_pan > -10 &&
         head_tilt > -10 && head_tilt < 0){

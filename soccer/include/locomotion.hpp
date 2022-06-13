@@ -13,7 +13,7 @@
 class Locomotion {
     public:
         Locomotion(webots::Robot* robot, int camera_width, int camera_height);
-        void gait(KinematicRobot* kinematic);
+        void gait(KinematicRobot* kinematic, double *data = NULL);
         void tracking(KinematicRobot* kinematic);
         void head(const double& x, const double& y, double& prev_x, double& prev_y);
         void InitFuzzyWalking();

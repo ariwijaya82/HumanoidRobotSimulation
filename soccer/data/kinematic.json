@@ -10,18 +10,18 @@
     "dsp_ratio": 0.1,
     "step_forward_back_ratio": 0,
     "foot_height": 40.0,
-    "swing_right_left": 25.0,
-    "swing_top_down": 5.0,
+    "swing_right_left": 15.0,
+    "swing_top_down": 7.0,
     "arm_swing_gain": 1.0
   },
   "offset": {
     "y_offset": 5.0,
     "roll_offset": 0.0,
     "hip_pitch_offset": 13.0,
-    "pitch_offset": 0.0,
+    "pitch_offset": 3.0,
     "yaw_offset": 0.0,
     "z_offset": 20.0,
-    "x_offset": -10.0
+    "x_offset": -14.0
   },
   "init_angles": {    
     "left_shoulder_pitch": 41.313,
