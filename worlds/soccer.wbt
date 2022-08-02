@@ -15,7 +15,5 @@ RobotstadiumSoccerField {
 Ball {
   translation 0.55 0 0.06
 }
-Ichiro {
-  hidden rotation_10 0.577416935802026 0.5773169329965163 0.5773169329965084 2.0944000001276017
-  translation -0.11407 1.25023 0.227
+Darwin-op {
 }
